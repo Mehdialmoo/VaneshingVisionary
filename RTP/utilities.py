@@ -514,8 +514,9 @@ def compare_pose(image, angle_point, angle_user, angle_target):
         stage = stage + 1
         cv2.putText(image, str("Put your arm down a little"), (10, 160),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.circle(image, (int(
-            angle_point[2][0]*width), int(angle_point[2][1]*height)), 30, (0, 0, 255), 5)
+        cv2.circle(image, (
+            int(angle_point[2][0]*width),
+            int(angle_point[2][1]*height)), 30, (0, 0, 255), 5)
 
     if angle_user[3] < (angle_target[3] - 15):
         # print("Lift your left arm")
