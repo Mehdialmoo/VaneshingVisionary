@@ -3,7 +3,7 @@ from utilities import Posefunc
 
 P = Posefunc()
 cap = cv2.VideoCapture(0)
-path = "Video/yoga10.jpg"
+path = "./RTP/video/yoga_data/"
 x = P.extractKeypoint(path)
 dim = (960, 760)
 resized = cv2.resize(x[3], dim, interpolation=cv2.INTER_AREA)
@@ -11,7 +11,8 @@ cv2.imshow('target', resized)
 angle_target = x[2]
 point_target = x[1]
 
-with P.MP_POSE.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
+with P.MP_POSE.Pose(min_detection_confidence=0.5,
+                    min_tracking_confidence=0.5) as pose:
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -30,65 +31,90 @@ with P.MP_POSE.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) a
         # these arguments the Focal_Length,
         # Known_width(centimeters),
         # and Known_distance(centimeters)
-
-        #
         try:
             landmarks = results.pose_landmarks.landmark
 
             shoulder = [
-                landmarks[P.mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
-                landmarks[P.mp_pose.PoseLandmark.LEFT_SHOULDER.value].y,
-                landmarks[P.mp_pose.PoseLandmark.LEFT_SHOULDER.value].z,
-                round(landmarks[P.mp_pose.PoseLandmark.LEFT_SHOULDER.value].visibility*100, 2)]
-            elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x, landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y, landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].z,
-                     round(landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].visibility*100, 2)]
-            wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x, landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y, landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].z,
-                     round(landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].visibility*100, 2)]
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].y,
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].z,
+                round(
+                    landmarks[
+                        P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value
+                    ].visibility*100, 2)]
+            elbow = [
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_ELBOW.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_ELBOW.value].y,
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_ELBOW.value].z,
+                round(
+                    landmarks[
+                        P.MP_POSE.PoseLandmark.LEFT_ELBOW.value
+                    ].visibility*100, 2)]
+            wrist = [
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_WRIST.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_WRIST.value].y,
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_WRIST.value].z,
+                round(
+                    landmarks[
+                        P.MP_POSE.PoseLandmark.LEFT_WRIST.value
+                    ].visibility*100, 2)]
 
             angle_point = []
 
-            right_elbow = [landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].x,
-                           landmarks[mp_pose.PoseLandmark.RIGHT_ELBOW.value].y]
+            right_elbow = [
+                landmarks[P.MP_POSE.PoseLandmark.RIGHT_ELBOW.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.RIGHT_ELBOW.value].y]
             angle_point.append(right_elbow)
 
-            left_elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x,
-                          landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y]
+            left_elbow = [
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_ELBOW.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_ELBOW.value].y]
             angle_point.append(left_elbow)
 
-            right_shoulder = [landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].x,
-                              landmarks[mp_pose.PoseLandmark.RIGHT_SHOULDER.value].y]
+            right_shoulder = [
+                landmarks[P.MP_POSE.PoseLandmark.RIGHT_SHOULDER.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.RIGHT_SHOULDER.value].y]
             angle_point.append(right_shoulder)
 
-            left_shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
-                             landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y]
+            left_shoulder = [
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].y]
             angle_point.append(left_shoulder)
 
-            right_wrist = [landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].x,
-                           landmarks[mp_pose.PoseLandmark.RIGHT_WRIST.value].y]
+            right_wrist = [
+                landmarks[P.MP_POSE.PoseLandmark.RIGHT_WRIST.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.RIGHT_WRIST.value].y]
 
-            left_wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x,
-                          landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y]
+            left_wrist = [
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_WRIST.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_WRIST.value].y]
 
-            right_hip = [landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].x,
-                         landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].y]
+            right_hip = [
+                landmarks[P.MP_POSE.PoseLandmark.RIGHT_HIP.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.RIGHT_HIP.value].y]
             angle_point.append(right_hip)
 
-            left_hip = [landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].x,
-                        landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].y]
+            left_hip = [
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_HIP.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_HIP.value].y]
             angle_point.append(left_hip)
 
-            right_knee = [landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].x,
-                          landmarks[mp_pose.PoseLandmark.RIGHT_KNEE.value].y]
+            right_knee = [
+                landmarks[P.MP_POSE.PoseLandmark.RIGHT_KNEE.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.RIGHT_KNEE.value].y]
             angle_point.append(right_knee)
 
-            left_knee = [landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].x,
-                         landmarks[mp_pose.PoseLandmark.LEFT_KNEE.value].y]
+            left_knee = [
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_KNEE.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_KNEE.value].y]
             angle_point.append(left_knee)
-            right_ankle = [landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].x,
-                           landmarks[mp_pose.PoseLandmark.RIGHT_ANKLE.value].y]
+            right_ankle = [
+                landmarks[P.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].y]
 
-            left_ankle = [landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].x,
-                          landmarks[mp_pose.PoseLandmark.LEFT_ANKLE.value].y]
+            left_ankle = [
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_ANKLE.value].x,
+                landmarks[P.MP_POSE.PoseLandmark.LEFT_ANKLE.value].y]
 
             keypoints = []
             for point in landmarks:
@@ -132,36 +158,20 @@ with P.MP_POSE.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) a
                     image, str(int((1 - p_score)*100)), (80, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 1, [0, 0, 255], 2, cv2.LINE_AA)
 
-        except:
+        except None:
             pass
 
-        P.MP_DRAWING.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
-                                    mp_drawing.DrawingSpec(
-                                        color=(0, 0, 255), thickness=4, circle_radius=4),
-                                    mp_drawing.DrawingSpec(
-                                        color=(0, 255, 0), thickness=3, circle_radius=3)
+        P.MP_DRAWING.draw_landmarks(image, results.pose_landmarks,
+                                    P.MP_POSE.POSE_CONNECTIONS,
+                                    P.MP_DRAWING.DrawingSpec(
+                                        color=(0, 0, 255),
+                                        thickness=4, circle_radius=4),
+                                    P.MP_DRAWING.DrawingSpec(
+                                        color=(0, 255, 0),
+                                        thickness=3, circle_radius=3)
                                     )
 
-
-#         cv2.putText(output_image, 'ID', (10,14), cv2.FONT_HERSHEY_SIMPLEX, 0.6, [0,0,255], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(1), (10,40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(2), (10,70), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(3), (10,100), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(4), (10,130), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(5), (10,160), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(6), (10,190), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(7), (10,220), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(8), (10,250), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-
-#         cv2.putText(output_image, 'Angle', (40,12), cv2.FONT_HERSHEY_SIMPLEX, 0.6, [0,0,255], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(int(angle1)), (40,40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(int(angle2)), (40,70), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(int(angle3)), (40,100), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(int(angle4)), (40,130), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(int(angle5)), (40,160), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(int(angle6)), (40,190), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(int(angle7)), (40,220), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
-#         cv2.putText(output_image, str(int(angle8)), (40,250), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0,153,0], 2, cv2.LINE_AA)
+        # txt test 150-*
 
         cv2.imshow('MediaPipe Feed', image)
 

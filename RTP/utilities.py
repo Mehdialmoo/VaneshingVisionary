@@ -104,20 +104,35 @@ class Posefunc:
                         landmarks[
                             self.MP_POSE.PoseLandmark.LEFT_HIP.value].y]
 
-                    left_knee = [landmarks[self.MP_POSE.PoseLandmark.LEFT_KNEE.value].x,
-                                 landmarks[self.MP_POSE.PoseLandmark.LEFT_KNEE.value].y]
+                    left_knee = [
+                        landmarks[
+                            self.MP_POSE.PoseLandmark.LEFT_KNEE.value].x,
+                        landmarks[
+                            self.MP_POSE.PoseLandmark.LEFT_KNEE.value].y]
 
-                    left_ankle = [landmarks[self.MP_POSE.PoseLandmark.LEFT_ANKLE.value].x,
-                                  landmarks[self.MP_POSE.PoseLandmark.LEFT_ANKLE.value].y]
+                    left_ankle = [
+                        landmarks[
+                            self.MP_POSE.PoseLandmark.LEFT_ANKLE.value].x,
+                        landmarks[
+                            self.MP_POSE.PoseLandmark.LEFT_ANKLE.value].y]
 
-                    right_hip = [landmarks[self.MP_POSE.PoseLandmark.RIGHT_HIP.value].x,
-                                 landmarks[self.MP_POSE.PoseLandmark.RIGHT_HIP.value].y]
+                    right_hip = [
+                        landmarks[
+                            self.MP_POSE.PoseLandmark.RIGHT_HIP.value].x,
+                        landmarks[
+                            self.MP_POSE.PoseLandmark.RIGHT_HIP.value].y]
 
-                    right_knee = [landmarks[self.MP_POSE.PoseLandmark.RIGHT_KNEE.value].x,
-                                  landmarks[self.MP_POSE.PoseLandmark.RIGHT_KNEE.value].y]
+                    right_knee = [
+                        landmarks[
+                            self.MP_POSE.PoseLandmark.RIGHT_KNEE.value].x,
+                        landmarks[
+                            self.MP_POSE.PoseLandmark.RIGHT_KNEE.value].y]
 
-                    right_ankle = [landmarks[self.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].x,
-                                   landmarks[self.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].y]
+                    right_ankle = [
+                        landmarks[
+                            self.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].x,
+                        landmarks[
+                            self.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].y]
 
                     joints = []
                     joint_list = pd.DataFrame([])
@@ -256,52 +271,90 @@ class Posefunc:
         #                 stage = "up"
         #                 counter +=1
 
-                except:
+                except None:
                     pass
                 joint_list_video = pd.concat(
                     [joint_list_video, joint_list], ignore_index=True)
                 cv2.rectangle(image, (0, 0), (100, 255), (255, 255, 255), -1)
-
+                # ====================================================================
                 cv2.putText(
                     image, 'ID', (10, 14),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6,
                     [0, 0, 255], 2, cv2.LINE_AA)
-                cv2.putText(image, str(1), (10, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(image, str(2), (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(image, str(3), (10, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(image, str(4), (10, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(image, str(5), (10, 160), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(image, str(6), (10, 190), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(image, str(7), (10, 220), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(image, str(8), (10, 250), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
+                cv2.putText(
+                    image, str(1), (10, 40),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
+                cv2.putText(
+                    image, str(2), (10, 70),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
+                cv2.putText(
+                    image, str(3), (10, 100),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
+                cv2.putText(
+                    image, str(4), (10, 130),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
+                cv2.putText(
+                    image, str(5), (10, 160),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
+                cv2.putText(
+                    image, str(6), (10, 190),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
+                cv2.putText(
+                    image, str(7), (10, 220),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
+                cv2.putText(
+                    image, str(8), (10, 250),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
+                # ====================================================================
+                cv2.putText(
+                    image, 'Angle', (40, 12),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.6,
+                    [0, 0, 255], 2, cv2.LINE_AA)
+                cv2.putText(
+                    image, str(int(angle[0])), (40, 40),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
+                cv2.putText(
+                    image, str(int(angle[1])), (40, 70),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
+                cv2.putText(
+                    image, str(int(angle[2])), (40, 100),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
 
-                cv2.putText(image, 'Angle', (40, 12), cv2.FONT_HERSHEY_SIMPLEX, 0.6, [
-                            0, 0, 255], 2, cv2.LINE_AA)
-                cv2.putText(image, str(int(angle[0])), (40, 40), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(image, str(int(angle[1])), (40, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(image, str(int(angle[2])), (40, 100), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(image, str(int(angle[3])), (40, 130), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(image, str(int(angle[4])), (40, 160), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(image, str(int(angle[5])), (40, 190), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(image, str(int(angle[6])), (40, 220), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(image, str(int(angle[7])), (40, 250), cv2.FONT_HERSHEY_SIMPLEX, 0.7, [
-                            0, 153, 0], 2, cv2.LINE_AA)
+                cv2.putText(
+                    image, str(int(angle[3])), (40, 130),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
 
+                cv2.putText(
+                    image, str(int(angle[4])), (40, 160),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
+
+                cv2.putText(
+                    image, str(int(angle[5])), (40, 190),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
+
+                cv2.putText(image, str(int(angle[6])), (40, 220),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                            [0, 153, 0], 2, cv2.LINE_AA)
+
+                cv2.putText(image, str(int(angle[7])), (40, 250),
+                            cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                            [0, 153, 0], 2, cv2.LINE_AA)
+
+                # ====================================================================
                 # Render detections
                 self.MP_DRAWING.draw_landmarks(
                     image, results.pose_landmarks,
@@ -326,10 +379,12 @@ class Posefunc:
         # Initialize the label of the pose. It is not known at this stage.
         label = 'Unknown Pose'
         color = (0, 0, 255)
-        left_shoulder = landmarks[self.MP_POSE.PoseLandmark.LEFT_SHOULDER.value]
+        left_shoulder = landmarks[
+            self.MP_POSE.PoseLandmark.LEFT_SHOULDER.value]
         left_elbow = landmarks[self.MP_POSE.PoseLandmark.LEFT_ELBOW.value]
         left_wrist = landmarks[self.MP_POSE.PoseLandmark.LEFT_WRIST.value]
-        right_shoulder = landmarks[self.MP_POSE.PoseLandmark.RIGHT_SHOULDER.value]
+        right_shoulder = landmarks[
+            self.MP_POSE.PoseLandmark.RIGHT_SHOULDER.value]
         right_elbow = landmarks[self.MP_POSE.PoseLandmark.RIGHT_ELBOW.value]
         right_wrist = landmarks[self.MP_POSE.PoseLandmark.RIGHT_WRIST.value]
         left_hip = landmarks[self.MP_POSE.PoseLandmark.LEFT_HIP.value]
@@ -359,17 +414,22 @@ class Posefunc:
 
             if angle4 > 70 and angle4 < 110 and angle3 > 70 and angle3 < 110:
 
-                if angle8 > 165 and angle8 < 195 or angle7 > 165 and angle7 < 195:
+                if ((angle8 > 165) and (angle8 < 195) or
+                        (angle7 > 165) and (angle7 < 195)):
 
-                    if angle8 > 80 and angle8 < 120 or angle7 > 80 and angle7 < 120:
+                    if ((angle8 > 80) and (angle8 < 120) or
+                            (angle7 > 80) and (angle7 < 120)):
 
                         label = 'Warrior II Pose'
 
-                if angle8 > 160 and angle8 < 195 and angle7 > 160 and angle7 < 195:
+                if ((angle8 > 160) and (angle8 < 195) and
+                        (angle7 > 160) and (angle7 < 195)):
 
                     label = 'T Pose'
 
-        if (angle8 > 165 and angle8 < 195) or (angle7 > 165 and angle7 < 195):
+        if (
+            (angle8 > 165 and angle8 < 195) or
+                (angle7 > 165 and angle7 < 195)):
 
             if (angle7 > 25 and angle7 < 45) or (angle8 > 25 and angle8 < 45):
 
@@ -401,6 +461,8 @@ class Posefunc:
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
         cv2.putText(output_image, str(8), (10, 250),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
+        # ====================================================================
+        #                                                                    #
         # ====================================================================
         cv2.putText(output_image, 'Angle', (40, 12),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.6, [0, 0, 255], 2, cv2.LINE_AA)
