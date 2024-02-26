@@ -3,7 +3,7 @@ from utilities import Posefunc
 
 P = Posefunc()
 cap = cv2.VideoCapture(0)
-path = "./RTP/video/yoga_data/"
+path = r"./gp/VaneshingVisionary/RTP/video/yoga_data"
 x = P.extractKeypoint(path)
 dim = (960, 760)
 resized = cv2.resize(x[3], dim, interpolation=cv2.INTER_AREA)

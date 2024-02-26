@@ -2,6 +2,8 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import pandas as pd
+import os
+
 # import time
 # import datetime
 import matplotlib.pyplot as plt
@@ -38,7 +40,8 @@ class Posefunc:
     # 2D
 
     def extractKeypoint(self, path):
-        IMAGE_FILES = [path]
+        IMAGE_FILES = os.listdir(path)
+        # print(IMAGE_FILES)
         # stage = None
         joint_list_video = pd.DataFrame([])
         count = 0
@@ -46,17 +49,22 @@ class Posefunc:
         with self.MP_POSE.Pose(
                 min_detection_confidence=0.5,
                 min_tracking_confidence=0.5) as pose:
-            for idx, file in enumerate(IMAGE_FILES):
-                image = cv2.imread(file)
+            for file in IMAGE_FILES:
+                address = str(path)+"/"+str(file)
+                image = cv2.imread(address)
+
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
+                # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 image.flags.writeable = False
                 results = pose.process(image)
 
                 image.flags.writeable = True
                 image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
                 image_h, image_w, _ = image.shape
-
-                try:
+                vvv = True
+                while (vvv):
+                    # try:
 
                     landmarks = results.pose_landmarks.landmark
 
@@ -146,8 +154,11 @@ class Posefunc:
                             'z': data_point.z,
                             'vis': data_point.visibility
                         }, index=[0])
-                        joint_list = joint_list.append(
-                            joints, ignore_index=True)
+                        """joint_list = joint_list.append(
+                            joints, ignore_index=True)"""
+                        joint_list = pd.concat(
+                            [joint_list, joints],
+                            ignore_index=True)
 
                     keypoints = []
                     for point in landmarks:
@@ -183,6 +194,8 @@ class Posefunc:
                     angle8 = self.calculateAngle(
                         left_hip, left_knee, left_ankle)
                     angle.append(int(angle8))
+
+                    # print(angle)
 
                     cv2.putText(image,
                                 str(1),
@@ -264,6 +277,7 @@ class Posefunc:
                                 2,
                                 cv2.LINE_AA
                                 )
+                    vvv = False
 
         #             if angle >120:
         #                 stage = "down"
@@ -271,8 +285,8 @@ class Posefunc:
         #                 stage = "up"
         #                 counter +=1
 
-                except None:
-                    pass
+                # except:
+                #    pass
                 joint_list_video = pd.concat(
                     [joint_list_video, joint_list], ignore_index=True)
                 cv2.rectangle(image, (0, 0), (100, 255), (255, 255, 255), -1)
