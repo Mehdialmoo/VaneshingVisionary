@@ -1,13 +1,17 @@
+import cv2
+from utilities import Posefunc
+
+P = Posefunc()
 cap = cv2.VideoCapture(0)
 path = "Video/yoga10.jpg"
-x = extractKeypoint(path)
+x = P.extractKeypoint(path)
 dim = (960, 760)
 resized = cv2.resize(x[3], dim, interpolation=cv2.INTER_AREA)
 cv2.imshow('target', resized)
 angle_target = x[2]
 point_target = x[1]
 
-with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
+with P.MP_POSE.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as pose:
 
     while cap.isOpened():
         ret, frame = cap.read()
@@ -31,8 +35,11 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
         try:
             landmarks = results.pose_landmarks.landmark
 
-            shoulder = [landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].x, landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].y, landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].z,
-                        round(landmarks[mp_pose.PoseLandmark.LEFT_SHOULDER.value].visibility*100, 2)]
+            shoulder = [
+                landmarks[P.mp_pose.PoseLandmark.LEFT_SHOULDER.value].x,
+                landmarks[P.mp_pose.PoseLandmark.LEFT_SHOULDER.value].y,
+                landmarks[P.mp_pose.PoseLandmark.LEFT_SHOULDER.value].z,
+                round(landmarks[P.mp_pose.PoseLandmark.LEFT_SHOULDER.value].visibility*100, 2)]
             elbow = [landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].x, landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].y, landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].z,
                      round(landmarks[mp_pose.PoseLandmark.LEFT_ELBOW.value].visibility*100, 2)]
             wrist = [landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].x, landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].y, landmarks[mp_pose.PoseLandmark.LEFT_WRIST.value].z,
@@ -91,47 +98,49 @@ with mp_pose.Pose(min_detection_confidence=0.5, min_tracking_confidence=0.5) as 
                     'Z': point.z,
                 })
 
-            p_score = dif_compare(keypoints, point_target)
+            p_score = P.dif_compare(keypoints, point_target)
 
             angle = []
 
-            angle1 = calculateAngle(right_shoulder, right_elbow, right_wrist)
+            angle1 = P.calculateAngle(right_shoulder, right_elbow, right_wrist)
             angle.append(int(angle1))
-            angle2 = calculateAngle(left_shoulder, left_elbow, left_wrist)
+            angle2 = P.calculateAngle(left_shoulder, left_elbow, left_wrist)
             angle.append(int(angle2))
-            angle3 = calculateAngle(right_elbow, right_shoulder, right_hip)
+            angle3 = P.calculateAngle(right_elbow, right_shoulder, right_hip)
             angle.append(int(angle3))
-            angle4 = calculateAngle(left_elbow, left_shoulder, left_hip)
+            angle4 = P.calculateAngle(left_elbow, left_shoulder, left_hip)
             angle.append(int(angle4))
-            angle5 = calculateAngle(right_shoulder, right_hip, right_knee)
+            angle5 = P.calculateAngle(right_shoulder, right_hip, right_knee)
             angle.append(int(angle5))
-            angle6 = calculateAngle(left_shoulder, left_hip, left_knee)
+            angle6 = P.calculateAngle(left_shoulder, left_hip, left_knee)
             angle.append(int(angle6))
-            angle7 = calculateAngle(right_hip, right_knee, right_ankle)
+            angle7 = P.calculateAngle(right_hip, right_knee, right_ankle)
             angle.append(int(angle7))
-            angle8 = calculateAngle(left_hip, left_knee, left_ankle)
+            angle8 = P.calculateAngle(left_hip, left_knee, left_ankle)
             angle.append(int(angle8))
 
-            compare_pose(image, angle_point, angle, angle_target)
-            a_score = diff_compare_angle(angle, angle_target)
+            P.compare_pose(image, angle_point, angle, angle_target)
+            a_score = P.diff_compare_angle(angle, angle_target)
 
             if (p_score >= a_score):
-                cv2.putText(image, str(int((1 - a_score)*100)), (80, 30),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1, [0, 0, 255], 2, cv2.LINE_AA)
+                cv2.putText(
+                    image, str(int((1 - a_score)*100)), (80, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, [0, 0, 255], 2, cv2.LINE_AA)
 
             else:
-                cv2.putText(image, str(int((1 - p_score)*100)), (80, 30),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1, [0, 0, 255], 2, cv2.LINE_AA)
+                cv2.putText(
+                    image, str(int((1 - p_score)*100)), (80, 30),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, [0, 0, 255], 2, cv2.LINE_AA)
 
         except:
             pass
 
-        mp_drawing.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
-                                  mp_drawing.DrawingSpec(
-                                      color=(0, 0, 255), thickness=4, circle_radius=4),
-                                  mp_drawing.DrawingSpec(
-                                      color=(0, 255, 0), thickness=3, circle_radius=3)
-                                  )
+        P.MP_DRAWING.draw_landmarks(image, results.pose_landmarks, mp_pose.POSE_CONNECTIONS,
+                                    mp_drawing.DrawingSpec(
+                                        color=(0, 0, 255), thickness=4, circle_radius=4),
+                                    mp_drawing.DrawingSpec(
+                                        color=(0, 255, 0), thickness=3, circle_radius=3)
+                                    )
 
 
 #         cv2.putText(output_image, 'ID', (10,14), cv2.FONT_HERSHEY_SIMPLEX, 0.6, [0,0,255], 2, cv2.LINE_AA)
