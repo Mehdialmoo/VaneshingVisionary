@@ -2,7 +2,6 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import pandas as pd
-import os
 
 # import time
 # import datetime
@@ -40,8 +39,7 @@ class Posefunc:
     # 2D
 
     def extractKeypoint(self, path):
-        IMAGE_FILES = os.listdir(path)
-        print(IMAGE_FILES)
+
         # print(IMAGE_FILES)
         # stage = None
         joint_list_video = pd.DataFrame([])
@@ -50,340 +48,332 @@ class Posefunc:
         with self.MP_POSE.Pose(
                 min_detection_confidence=0.5,
                 min_tracking_confidence=0.5) as pose:
-            for file in IMAGE_FILES:
-                print(file)
-                address = str(path)+"/"+str(file)
-                # address = path
-                image = cv2.imread(address)
-                image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-                # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-                image.flags.writeable = False
-                results = pose.process(image)
-                image.flags.writeable = True
-                image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
-                image_h, image_w, _ = image.shape
-                vvv = True
-                while vvv:
-                    # try:
-                    print('hi')
-                    landmarks = results.pose_landmarks.landmark
 
-                    # print(len(landmarks))  # check later .... txt util 63-75
+            image = cv2.imread(path)
+            image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+            image.flags.writeable = False
+            results = pose.process(image)
+            image.flags.writeable = True
+            image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
+            image_h, image_w, _ = image.shape
 
-                    left_shoulder = [
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].x,
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].y]
+            try:
+                landmarks = results.pose_landmarks.landmark
 
-                    left_elbow = [
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.LEFT_ELBOW.value].x,
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.LEFT_ELBOW.value].y]
+                # print(len(landmarks))  # check later .... txt util 63-75
 
-                    left_wrist = [
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.LEFT_WRIST.value].x,
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.LEFT_WRIST.value].y]
+                left_shoulder = [
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].x,
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].y]
 
-                    right_shoulder = [
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.RIGHT_SHOULDER.value].x,
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.RIGHT_SHOULDER.value].y]
+                left_elbow = [
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.LEFT_ELBOW.value].x,
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.LEFT_ELBOW.value].y]
 
-                    right_elbow = [
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.RIGHT_ELBOW.value].x,
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.RIGHT_ELBOW.value].y]
+                left_wrist = [
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.LEFT_WRIST.value].x,
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.LEFT_WRIST.value].y]
 
-                    right_wrist = [
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.RIGHT_WRIST.value].x,
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.RIGHT_WRIST.value].y]
+                right_shoulder = [
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.RIGHT_SHOULDER.value].x,
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.RIGHT_SHOULDER.value].y]
 
-                    left_hip = [
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.LEFT_HIP.value].x,
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.LEFT_HIP.value].y]
+                right_elbow = [
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.RIGHT_ELBOW.value].x,
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.RIGHT_ELBOW.value].y]
 
-                    left_knee = [
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.LEFT_KNEE.value].x,
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.LEFT_KNEE.value].y]
+                right_wrist = [
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.RIGHT_WRIST.value].x,
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.RIGHT_WRIST.value].y]
 
-                    left_ankle = [
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.LEFT_ANKLE.value].x,
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.LEFT_ANKLE.value].y]
+                left_hip = [
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.LEFT_HIP.value].x,
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.LEFT_HIP.value].y]
 
-                    right_hip = [
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.RIGHT_HIP.value].x,
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.RIGHT_HIP.value].y]
+                left_knee = [
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.LEFT_KNEE.value].x,
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.LEFT_KNEE.value].y]
 
-                    right_knee = [
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.RIGHT_KNEE.value].x,
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.RIGHT_KNEE.value].y]
+                left_ankle = [
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.LEFT_ANKLE.value].x,
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.LEFT_ANKLE.value].y]
 
-                    right_ankle = [
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].x,
-                        landmarks[
-                            self.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].y]
+                right_hip = [
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.RIGHT_HIP.value].x,
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.RIGHT_HIP.value].y]
 
-                    joints = []
-                    joint_list = pd.DataFrame([])
+                right_knee = [
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.RIGHT_KNEE.value].x,
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.RIGHT_KNEE.value].y]
 
-                    for i, data_point in zip(range(len(landmarks)), landmarks):
-                        joints = pd.DataFrame({
-                            'frame': count,
-                            'id': i,
-                            'x': data_point.x,
-                            'y': data_point.y,
-                            'z': data_point.z,
-                            'vis': data_point.visibility
-                        }, index=[0])
-                        """joint_list = joint_list.append(
-                            joints, ignore_index=True)"""
-                        joint_list = pd.concat(
-                            [joint_list, joints],
-                            ignore_index=True)
+                right_ankle = [
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].x,
+                    landmarks[
+                        self.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].y]
 
-                    keypoints = []
-                    for point in landmarks:
-                        keypoints.append({
-                            'X': point.x,
-                            'Y': point.y,
-                            'Z': point.z,
-                        })
+                joints = []
+                joint_list = pd.DataFrame([])
 
-                    angle = []
-                    # angle_list = pd.DataFrame([])
-                    angle1 = self.calculateAngle(
-                        right_shoulder, right_elbow, right_wrist)
-                    angle.append(int(angle1))
-                    angle2 = self.calculateAngle(
-                        left_shoulder, left_elbow, left_wrist)
-                    angle.append(int(angle2))
-                    angle3 = self.calculateAngle(
-                        right_elbow, right_shoulder, right_hip)
-                    angle.append(int(angle3))
-                    angle4 = self.calculateAngle(
-                        left_elbow, left_shoulder, left_hip)
-                    angle.append(int(angle4))
-                    angle5 = self.calculateAngle(
-                        right_shoulder, right_hip, right_knee)
-                    angle.append(int(angle5))
-                    angle6 = self.calculateAngle(
-                        left_shoulder, left_hip, left_knee)
-                    angle.append(int(angle6))
-                    angle7 = self.calculateAngle(
-                        right_hip, right_knee, right_ankle)
-                    angle.append(int(angle7))
-                    angle8 = self.calculateAngle(
-                        left_hip, left_knee, left_ankle)
-                    angle.append(int(angle8))
+                for i, data_point in zip(range(len(landmarks)), landmarks):
+                    joints = pd.DataFrame({
+                        'frame': count,
+                        'id': i,
+                        'x': data_point.x,
+                        'y': data_point.y,
+                        'z': data_point.z,
+                        'vis': data_point.visibility
+                    }, index=[0])
+                    """joint_list = joint_list.append(
+                        joints, ignore_index=True)"""
+                    joint_list = pd.concat(
+                        [joint_list, joints],
+                        ignore_index=True)
 
-                    # print(angle)
+                keypoints = []
+                for point in landmarks:
+                    keypoints.append({
+                        'X': point.x,
+                        'Y': point.y,
+                        'Z': point.z,
+                    })
 
-                    cv2.putText(image,
-                                str(1),
-                                tuple(np.multiply(right_elbow, [
-                                    image_w, image_h,]).astype(int)),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.5,
-                                [255, 255, 0],
-                                2,
-                                cv2.LINE_AA
-                                )
-                    cv2.putText(image,
-                                str(2),
-                                tuple(np.multiply(left_elbow, [
-                                    image_w, image_h]).astype(int)),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.5,
-                                [255, 255, 0],
-                                2,
-                                cv2.LINE_AA
-                                )
-                    cv2.putText(image,
-                                str(3),
-                                tuple(np.multiply(right_shoulder, [
-                                    image_w, image_h]).astype(int)),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.5,
-                                [255, 255, 0],
-                                2,
-                                cv2.LINE_AA
-                                )
-                    cv2.putText(image,
-                                str(4),
-                                tuple(np.multiply(left_shoulder, [
-                                    image_w, image_h]).astype(int)),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.5,
-                                [255, 255, 0],
-                                2,
-                                cv2.LINE_AA
-                                )
-                    cv2.putText(image,
-                                str(5),
-                                tuple(np.multiply(right_hip, [
-                                    image_w, image_h]).astype(int)),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.5,
-                                [255, 255, 0],
-                                2,
-                                cv2.LINE_AA
-                                )
-                    cv2.putText(image,
-                                str(6),
-                                tuple(np.multiply(
-                                    left_hip, [image_w, image_h]).astype(int)),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.5,
-                                [255, 255, 0],
-                                2,
-                                cv2.LINE_AA
-                                )
-                    cv2.putText(image,
-                                str(7),
-                                tuple(np.multiply(right_knee, [
-                                    image_w, image_h]).astype(int)),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.5,
-                                [255, 255, 0],
-                                2,
-                                cv2.LINE_AA
-                                )
-                    cv2.putText(image,
-                                str(8),
-                                tuple(np.multiply(left_knee, [
-                                    image_w, image_h]).astype(int)),
-                                cv2.FONT_HERSHEY_SIMPLEX,
-                                0.5,
-                                [255, 255, 0],
-                                2,
-                                cv2.LINE_AA
-                                )
-                    vvv = False
+                angle = []
+                # angle_list = pd.DataFrame([])
+                angle1 = self.calculateAngle(
+                    right_shoulder, right_elbow, right_wrist)
+                angle.append(int(angle1))
+                angle2 = self.calculateAngle(
+                    left_shoulder, left_elbow, left_wrist)
+                angle.append(int(angle2))
+                angle3 = self.calculateAngle(
+                    right_elbow, right_shoulder, right_hip)
+                angle.append(int(angle3))
+                angle4 = self.calculateAngle(
+                    left_elbow, left_shoulder, left_hip)
+                angle.append(int(angle4))
+                angle5 = self.calculateAngle(
+                    right_shoulder, right_hip, right_knee)
+                angle.append(int(angle5))
+                angle6 = self.calculateAngle(
+                    left_shoulder, left_hip, left_knee)
+                angle.append(int(angle6))
+                angle7 = self.calculateAngle(
+                    right_hip, right_knee, right_ankle)
+                angle.append(int(angle7))
+                angle8 = self.calculateAngle(
+                    left_hip, left_knee, left_ankle)
+                angle.append(int(angle8))
 
-        #             if angle >120:
-        #                 stage = "down"
-        #             if angle <30 and stage == 'down':
-        #                 stage = "up"
-        #                 counter +=1
+                cv2.putText(image,
+                            str(1),
+                            tuple(np.multiply(right_elbow, [
+                                image_w, image_h,]).astype(int)),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.5,
+                            [255, 255, 0],
+                            2,
+                            cv2.LINE_AA
+                            )
+                cv2.putText(image,
+                            str(2),
+                            tuple(np.multiply(left_elbow, [
+                                image_w, image_h]).astype(int)),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.5,
+                            [255, 255, 0],
+                            2,
+                            cv2.LINE_AA
+                            )
+                cv2.putText(image,
+                            str(3),
+                            tuple(np.multiply(right_shoulder, [
+                                image_w, image_h]).astype(int)),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.5,
+                            [255, 255, 0],
+                            2,
+                            cv2.LINE_AA
+                            )
+                cv2.putText(image,
+                            str(4),
+                            tuple(np.multiply(left_shoulder, [
+                                image_w, image_h]).astype(int)),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.5,
+                            [255, 255, 0],
+                            2,
+                            cv2.LINE_AA
+                            )
+                cv2.putText(image,
+                            str(5),
+                            tuple(np.multiply(right_hip, [
+                                image_w, image_h]).astype(int)),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.5,
+                            [255, 255, 0],
+                            2,
+                            cv2.LINE_AA
+                            )
+                cv2.putText(image,
+                            str(6),
+                            tuple(np.multiply(
+                                left_hip, [image_w, image_h]).astype(int)),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.5,
+                            [255, 255, 0],
+                            2,
+                            cv2.LINE_AA
+                            )
+                cv2.putText(image,
+                            str(7),
+                            tuple(np.multiply(right_knee, [
+                                image_w, image_h]).astype(int)),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.5,
+                            [255, 255, 0],
+                            2,
+                            cv2.LINE_AA
+                            )
+                cv2.putText(image,
+                            str(8),
+                            tuple(np.multiply(left_knee, [
+                                image_w, image_h]).astype(int)),
+                            cv2.FONT_HERSHEY_SIMPLEX,
+                            0.5,
+                            [255, 255, 0],
+                            2,
+                            cv2.LINE_AA
+                            )
 
-                # except:
-                #    pass
-                joint_list_video = pd.concat(
-                    [joint_list_video, joint_list], ignore_index=True)
-                cv2.rectangle(image, (0, 0), (100, 255), (255, 255, 255), -1)
-                # ====================================================================
-                cv2.putText(
-                    image, 'ID', (10, 14),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6,
-                    [0, 0, 255], 2, cv2.LINE_AA)
-                cv2.putText(
-                    image, str(1), (10, 40),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    [0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(
-                    image, str(2), (10, 70),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    [0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(
-                    image, str(3), (10, 100),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    [0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(
-                    image, str(4), (10, 130),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    [0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(
-                    image, str(5), (10, 160),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    [0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(
-                    image, str(6), (10, 190),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    [0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(
-                    image, str(7), (10, 220),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    [0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(
-                    image, str(8), (10, 250),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    [0, 153, 0], 2, cv2.LINE_AA)
-                # ====================================================================
-                cv2.putText(
-                    image, 'Angle', (40, 12),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6,
-                    [0, 0, 255], 2, cv2.LINE_AA)
-                cv2.putText(
-                    image, str(int(angle[0])), (40, 40),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    [0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(
-                    image, str(int(angle[1])), (40, 70),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    [0, 153, 0], 2, cv2.LINE_AA)
-                cv2.putText(
-                    image, str(int(angle[2])), (40, 100),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    [0, 153, 0], 2, cv2.LINE_AA)
+    #             if angle >120:
+    #                 stage = "down"
+    #             if angle <30 and stage == 'down':
+    #                 stage = "up"
+    #                 counter +=1
 
-                cv2.putText(
-                    image, str(int(angle[3])), (40, 130),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    [0, 153, 0], 2, cv2.LINE_AA)
+            except Exception as e:
+                print("Error in drawing bones", e)
+            joint_list_video = pd.concat(
+                [joint_list_video, joint_list], ignore_index=True)
+            cv2.rectangle(image, (0, 0), (100, 255), (255, 255, 255), -1)
+            # ====================================================================
+            cv2.putText(
+                image, 'ID', (10, 14),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.6,
+                [0, 0, 255], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str(1), (10, 40),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str(2), (10, 70),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str(3), (10, 100),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str(4), (10, 130),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str(5), (10, 160),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str(6), (10, 190),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str(7), (10, 220),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str(8), (10, 250),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
+            # ====================================================================
+            cv2.putText(
+                image, 'Angle', (40, 12),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.6,
+                [0, 0, 255], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str(int(angle[0])), (40, 40),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str(int(angle[1])), (40, 70),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str(int(angle[2])), (40, 100),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
 
-                cv2.putText(
-                    image, str(int(angle[4])), (40, 160),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    [0, 153, 0], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str(int(angle[3])), (40, 130),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
 
-                cv2.putText(
-                    image, str(int(angle[5])), (40, 190),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    [0, 153, 0], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str(int(angle[4])), (40, 160),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
 
-                cv2.putText(image, str(int(angle[6])), (40, 220),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                            [0, 153, 0], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str(int(angle[5])), (40, 190),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
 
-                cv2.putText(image, str(int(angle[7])), (40, 250),
-                            cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                            [0, 153, 0], 2, cv2.LINE_AA)
+            cv2.putText(image, str(int(angle[6])), (40, 220),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                        [0, 153, 0], 2, cv2.LINE_AA)
 
-                # ====================================================================
-                # Render detections
-                self.MP_DRAWING.draw_landmarks(
-                    image, results.pose_landmarks,
-                    self.MP_POSE.POSE_CONNECTIONS,
-                    self.MP_DRAWING.DrawingSpec(
-                        color=(0, 0, 255),
-                        thickness=4, circle_radius=2),
-                    self.MP_DRAWING.DrawingSpec(
-                        color=(0, 255, 0), thickness=4, circle_radius=2)
-                )
+            cv2.putText(image, str(int(angle[7])), (40, 250),
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                        [0, 153, 0], 2, cv2.LINE_AA)
 
-                # cv2.imshow('MediaPipe Feed',image)
+            # ====================================================================
+            # Render detections
+            self.MP_DRAWING.draw_landmarks(
+                image, results.pose_landmarks,
+                self.MP_POSE.POSE_CONNECTIONS,
+                self.MP_DRAWING.DrawingSpec(
+                    color=(0, 0, 255),
+                    thickness=4, circle_radius=2),
+                self.MP_DRAWING.DrawingSpec(
+                    color=(0, 255, 0), thickness=4, circle_radius=2)
+            )
 
-                if cv2.waitKey(0) & 0xFF == ord('q'):
-                    break
+            # cv2.imshow('MediaPipe Feed',image)
+
+            if cv2.waitKey(0) & 0xFF == ord('q'):
+                print("00000000000000")
 
             cv2.destroyAllWindows()
         return landmarks, keypoints, angle, image
