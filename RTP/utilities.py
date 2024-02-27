@@ -68,7 +68,7 @@ class Posefunc:
 
                     landmarks = results.pose_landmarks.landmark
 
-                    # print(landmarks) # check later .... txt util 63-75
+                    print(len(landmarks))  # check later .... txt util 63-75
 
                     left_shoulder = [
                         landmarks[
@@ -766,3 +766,33 @@ class Posefunc:
                             "vis": landmarks[i].visibility
                             }, ignore_index=True)
         return df
+
+    def segment(p1, p2):
+
+        fig = plt.figure(1)
+        ax = fig.gca(projection='3d')
+        p1 = np.array(p1)
+
+        p2 = np.array(p2)
+        x = [p1[0], p2[0]]
+        y = [p1[1], p2[1]]
+        z = [p1[2], p2[2]]
+        ax.scatter(x, y, z)
+        ax.plot(x, y, z, c='r')
+
+    def L2_normal(x):
+        new_x = []
+        for i in range(len(x)):
+            z = list(x[i].values())/np.linalg.norm(list(x[i].values()))
+            new_x.append(z)
+            print(x[i])
+        return new_x
+
+    def diff_compare(self, x, y):
+        average = []
+        for i, j in zip(range(len(x)), range(len(y))):
+            result = 1 - spatial.distance.cosine(x[i], y[j])
+            average.append(result)
+        score = math.sqrt(2*(1-round(self.Average(average), 2)))
+        print(self.Average(average))
+        return score
