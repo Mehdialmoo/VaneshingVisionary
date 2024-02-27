@@ -41,6 +41,7 @@ class Posefunc:
 
     def extractKeypoint(self, path):
         IMAGE_FILES = os.listdir(path)
+        print(IMAGE_FILES)
         # print(IMAGE_FILES)
         # stage = None
         joint_list_video = pd.DataFrame([])
@@ -50,25 +51,24 @@ class Posefunc:
                 min_detection_confidence=0.5,
                 min_tracking_confidence=0.5) as pose:
             for file in IMAGE_FILES:
+                print(file)
                 address = str(path)+"/"+str(file)
+                # address = path
                 image = cv2.imread(address)
-
                 image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-
                 # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
                 image.flags.writeable = False
                 results = pose.process(image)
-
                 image.flags.writeable = True
                 image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
                 image_h, image_w, _ = image.shape
                 vvv = True
-                while (vvv):
+                while vvv:
                     # try:
-
+                    print('hi')
                     landmarks = results.pose_landmarks.landmark
 
-                    print(len(landmarks))  # check later .... txt util 63-75
+                    # print(len(landmarks))  # check later .... txt util 63-75
 
                     left_shoulder = [
                         landmarks[

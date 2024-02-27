@@ -56,11 +56,13 @@ while camera_video.isOpened():
 
     frame = cv2.resize(frame, (int(frame_width * (860 / frame_height)), 860))
 
-    frame, landmarks = detectPose(frame, mp_pose.Pose(
-        min_detection_confidence=0.5, min_tracking_confidence=0.5), display=False)
+    frame, landmarks = P.detectPose(frame, P.MP_POSE.Pose(
+        min_detection_confidence=0.5,
+        min_tracking_confidence=0.5),
+        display=False)
 
     if landmarks:
-        frame, _ = classifyPose(landmarks, frame, display=False)
+        frame, _ = P.classifyPose(landmarks, frame, display=False)
     cv2.imshow('Human Pose', frame)
 
     if cv2.waitKey(10) & 0xFF == ord('q'):
@@ -74,7 +76,7 @@ image = cv2.imread('Video/yoga25.jpg')
 # cv2.imshow('window_name', image)
 # cv2.waitKey(0)
 # cv2.destroyAllWindows()
-output_image, landmarks = detectPose(image, mp_pose.Pose(
+output_image, landmarks = P.detectPose(image, P.MP_POSE.Pose(
     min_detection_confidence=0.5, min_tracking_confidence=0.5), display=False)
 if landmarks:
-    classifyPose(landmarks, output_image, display=True)
+    P.classifyPose(landmarks, output_image, display=True)

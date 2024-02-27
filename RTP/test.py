@@ -33,7 +33,7 @@ with P.MP_POSE.Pose(min_detection_confidence=0.5,
         # and Known_distance(centimeters)
         try:
             landmarks = results.pose_landmarks.landmark
-
+            print(results.pose_landmarks)
             shoulder = [
                 landmarks[P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].x,
                 landmarks[P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].y,
