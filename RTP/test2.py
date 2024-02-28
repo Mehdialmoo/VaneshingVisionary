@@ -68,15 +68,14 @@ while camera_video.isOpened():
     if cv2.waitKey(10) & 0xFF == ord('q'):
         break
 
-camera_video.release()
-cv2.destroyAllWindows()
+    camera_video.release()
+    cv2.destroyAllWindows()
 
-
-image = cv2.imread('r"./gp/VaneshingVisionary/RTP/video/yoga25.jpg"')
-# cv2.imshow('window_name', image)
-# cv2.waitKey(0)
-# cv2.destroyAllWindows()
-output_image, landmarks = P.detectPose(image, P.MP_POSE.Pose(
-    min_detection_confidence=0.5, min_tracking_confidence=0.5), display=False)
-if landmarks:
-    P.classifyPose(landmarks, output_image, display=True)
+    image = cv2.imread(r"./gp/VaneshingVisionary/RTP/video/yoga25.jpg")
+    cv2.imshow('window_name', image)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
+    output_image, landmarks = P.detectPose(image, P.MP_POSE.Pose(
+        min_detection_confidence=0.5, min_tracking_confidence=0.5), display=False)
+    if landmarks:
+        P.classifyPose(landmarks, output_image, display=True)

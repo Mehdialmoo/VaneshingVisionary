@@ -540,6 +540,7 @@ class Posefunc:
         else:
             return output_image, landmarks
 
+    @staticmethod
     def compare_pose(image, angle_point, angle_user, angle_target):
         angle_user = np.array(angle_user)
         angle_target = np.array(angle_target)
@@ -729,13 +730,13 @@ class Posefunc:
         return sum(lst) / len(lst)
 
     def dif_compare(self, x, y):
-        average = []
+        average = np.array([])
         for i, j in zip(range(len(list(x))), range(len(list(y)))):
             result = 1 - \
                 spatial.distance.cosine(
                     list(x[i].values()), list(y[j].values()))
-            average.append(result)
-        score = math.sqrt(2*(1-round(self.Average(average), 2)))
+            average = np.append(average, result)
+        score = math.sqrt(2*(1-round((sum(average)/len(average)), 2)))
         # print(Average(average))
         return score
 
@@ -745,8 +746,9 @@ class Posefunc:
             z = np.abs(x[i] - y[j])/((x[i] + y[j])/2)
             new_x.append(z)
             # print(new_x[i])
-        return self.Average(new_x)
+        return (sum(new_x)/len(new_x))
 
+    @staticmethod
     def convert_data(landmarks):
         df = pd.DataFrame(columns=['x', 'y', 'z', 'vis'])
         for i in range(len(landmarks)):
