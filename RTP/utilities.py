@@ -788,3 +788,11 @@ class Posefunc:
         score = math.sqrt(2*(1-round(self.Average(average), 2)))
         print(self.Average(average))
         return score
+
+    def load(self, dir, filename, num):
+        global i
+        x = self.extractKeypoint(dir+filename[num])
+        resized = cv2.resize(x[3], (860, 960), interpolation=cv2.INTER_AREA)
+        angle_target = x[2]
+        point_target = x[1]
+        return resized, angle_target, point_target
