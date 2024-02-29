@@ -5,7 +5,7 @@ import numpy as np
 
 P = Posefunc()
 cap = cv2.VideoCapture(0)
-path = r"./gp/VaneshingVisionary/RTP/video/yoga_data/"
+path = r"./RTP/video/yoga_data/"
 
 i = 1
 IMAGE_FILES = os.listdir(path)

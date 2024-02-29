@@ -10,13 +10,13 @@ from mpl_toolkits.mplot3d import Axes3D
 
 P = Posefunc()
 
-x = P.extractKeypoint(r"./gp/VaneshingVisionary/RTP/video/yoga10.jpg")
+x = P.extractKeypoint(r"./RTP/video/yoga10.jpg")
 
 cv2.imshow('MediaPipe Feed', x[3])
 cv2.waitKey(0)
 cv2.destroyAllWindows()
 
-y = P.extractKeypoint(r"./gp/VaneshingVisionary/RTP/video/yoga11.jpg")
+y = P.extractKeypoint(r"./RTP/video/yoga11.jpg")
 
 cv2.imshow('MediaPipe Feed', y[3])
 cv2.waitKey(0)
@@ -71,7 +71,7 @@ while camera_video.isOpened():
     camera_video.release()
     cv2.destroyAllWindows()
 
-    image = cv2.imread(r"./gp/VaneshingVisionary/RTP/video/yoga25.jpg")
+    image = cv2.imread(r"./RTP/video/yoga25.jpg")
     cv2.imshow('window_name', image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
