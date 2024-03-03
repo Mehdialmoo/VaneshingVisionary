@@ -106,6 +106,7 @@ def test():
                             landmark_dic[CAL_LIST[i][0]], 
                             landmark_dic[CAL_LIST[i][1]],
                             landmark_dic[CAL_LIST[i][2]])
+                        angle.append(ang)
 
                     P.compare_pose(image, angle_point, angle, angle_target)
                     a_score = P.diff_compare_angle(angle, angle_target)
