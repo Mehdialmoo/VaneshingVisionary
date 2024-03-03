@@ -81,7 +81,7 @@ def test():
                     
 
                     angle_point = []
-'''                    landmark_dic = {}                    
+                    '''landmark_dic = {}                    
                     for k,v in JOINT_DIC:
                         pos = [landmarks[v].x, landmarks[v].y]
                         landmark_dic[k] = pos
@@ -161,7 +161,8 @@ def test():
                             landmark_dic[CAL_LIST[i][0]], 
                             landmark_dic[CAL_LIST[i][1]],
                             landmark_dic[CAL_LIST[i][2]])
-                        angle.append(ang)'''
+                        angle.append(ang)
+'''
 
                     angle1 = P.calculateAngle(
                         right_shoulder, right_elbow, right_wrist)
