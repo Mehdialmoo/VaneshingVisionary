@@ -81,12 +81,15 @@ def test():
                     
 
                     angle_point = []
-                    '''landmark_dic = {}                    
-                    for k,v in JOINT_DIC:
+                    landmark_dic = {}                    
+                    for k in JOINT_DIC:
+                        v = JOINT_DIC[k]
                         pos = [landmarks[v].x, landmarks[v].y]
                         landmark_dic[k] = pos
                         if k in ANGLE_LIST:
-                            angle_point.append(pos)'''
+                            angle_point.append(pos)
+                    
+                    '''
                     
                     right_elbow = [
                         landmarks[P.MP_POSE.PoseLandmark.RIGHT_ELBOW.value].x,
@@ -142,7 +145,7 @@ def test():
                     left_ankle = [
                         landmarks[P.MP_POSE.PoseLandmark.LEFT_ANKLE.value].x,
                         landmarks[P.MP_POSE.PoseLandmark.LEFT_ANKLE.value].y]
-        
+                    '''
 
                     keypoints = []
                     for point in landmarks:
@@ -156,13 +159,13 @@ def test():
 
                     angle = []
 
-                    '''for i in range(8):
+                    for i in range(8):
                         ang = P.calculateAngle(
                             landmark_dic[CAL_LIST[i][0]], 
                             landmark_dic[CAL_LIST[i][1]],
                             landmark_dic[CAL_LIST[i][2]])
                         angle.append(ang)
-'''
+                    '''
 
                     angle1 = P.calculateAngle(
                         right_shoulder, right_elbow, right_wrist)
@@ -187,6 +190,9 @@ def test():
                     angle.append(int(angle7))
                     angle8 = P.calculateAngle(left_hip, left_knee, left_ankle)
                     angle.append(int(angle8))
+                    '''
+
+
                     P.compare_pose(image, angle_point, angle, angle_target)
                     a_score = P.diff_compare_angle(angle, angle_target)
 
