@@ -81,13 +81,68 @@ def test():
                     
 
                     angle_point = []
-                    landmark_dic = {}                    
+                    '''landmark_dic = {}                    
                     for k,v in JOINT_DIC:
                         pos = [landmarks[v].x, landmarks[v].y]
                         landmark_dic[k] = pos
                         if k in ANGLE_LIST:
-                            angle_point.append(pos)
-                            
+                            angle_point.append(pos)'''
+                    
+                    right_elbow = [
+                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_ELBOW.value].x,
+                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_ELBOW.value].y]
+                    angle_point.append(right_elbow)
+
+                    left_elbow = [
+                        landmarks[P.MP_POSE.PoseLandmark.LEFT_ELBOW.value].x,
+                        landmarks[P.MP_POSE.PoseLandmark.LEFT_ELBOW.value].y]
+                    angle_point.append(left_elbow)
+
+                    right_shoulder = [
+                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_SHOULDER.value].x,
+                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_SHOULDER.value].y]
+                    angle_point.append(right_shoulder)
+
+                    left_shoulder = [
+                        landmarks[P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].x,
+                        landmarks[P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].y]
+                    angle_point.append(left_shoulder)
+
+                    right_wrist = [
+                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_WRIST.value].x,
+                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_WRIST.value].y]
+
+                    left_wrist = [
+                        landmarks[P.MP_POSE.PoseLandmark.LEFT_WRIST.value].x,
+                        landmarks[P.MP_POSE.PoseLandmark.LEFT_WRIST.value].y]
+
+                    right_hip = [
+                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_HIP.value].x,
+                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_HIP.value].y]
+                    angle_point.append(right_hip)
+
+                    left_hip = [
+                        landmarks[P.MP_POSE.PoseLandmark.LEFT_HIP.value].x,
+                        landmarks[P.MP_POSE.PoseLandmark.LEFT_HIP.value].y]
+                    angle_point.append(left_hip)
+
+                    right_knee = [
+                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_KNEE.value].x,
+                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_KNEE.value].y]
+                    angle_point.append(right_knee)
+
+                    left_knee = [
+                        landmarks[P.MP_POSE.PoseLandmark.LEFT_KNEE.value].x,
+                        landmarks[P.MP_POSE.PoseLandmark.LEFT_KNEE.value].y]
+                    angle_point.append(left_knee)
+                    right_ankle = [
+                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].x,
+                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].y]
+
+                    left_ankle = [
+                        landmarks[P.MP_POSE.PoseLandmark.LEFT_ANKLE.value].x,
+                        landmarks[P.MP_POSE.PoseLandmark.LEFT_ANKLE.value].y]
+        
 
                     keypoints = []
                     for point in landmarks:
@@ -101,13 +156,37 @@ def test():
 
                     angle = []
 
-                    for i in range(8):
+                    '''for i in range(8):
                         ang = P.calculateAngle(
                             landmark_dic[CAL_LIST[i][0]], 
                             landmark_dic[CAL_LIST[i][1]],
                             landmark_dic[CAL_LIST[i][2]])
                         angle.append(ang)
+'''
 
+                    angle1 = P.calculateAngle(
+                        right_shoulder, right_elbow, right_wrist)
+                    angle.append(int(angle1))
+                    angle2 = P.calculateAngle(
+                        left_shoulder, left_elbow, left_wrist)
+                    angle.append(int(angle2))
+                    angle3 = P.calculateAngle(
+                        right_elbow, right_shoulder, right_hip)
+                    angle.append(int(angle3))
+                    angle4 = P.calculateAngle(
+                        left_elbow, left_shoulder, left_hip)
+                    angle.append(int(angle4))
+                    angle5 = P.calculateAngle(
+                        right_shoulder, right_hip, right_knee)
+                    angle.append(int(angle5))
+                    angle6 = P.calculateAngle(
+                        left_shoulder, left_hip, left_knee)
+                    angle.append(int(angle6))
+                    angle7 = P.calculateAngle(
+                        right_hip, right_knee, right_ankle)
+                    angle.append(int(angle7))
+                    angle8 = P.calculateAngle(left_hip, left_knee, left_ankle)
+                    angle.append(int(angle8))
                     P.compare_pose(image, angle_point, angle, angle_target)
                     a_score = P.diff_compare_angle(angle, angle_target)
 
