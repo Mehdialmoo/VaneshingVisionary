@@ -2,10 +2,49 @@ import cv2
 import os
 from utilities import Posefunc
 import numpy as np
+
+path = "./RTP/video/yoga_data/"
+joint_dic ={ 
+    'RIGHT_ELBOW':14,
+    'LEFT_SHOULDER':11,
+    'RIGHT_SHOULDER':12,
+    'LEFT_ELBOW':13,
+    'RIGHT_WRIST':16,
+    'LEFT_WRIST':15,
+    'RIGHT_HIP':24,
+    'LEFT_HIP':23,
+    'RIGHT_KNEE':26,
+    'LEFT_KNEE':25,
+    'RIGHT_ANKLE':28,
+    'LEFT_ANKLE':27
+}
+angle_dic = {
+    1:'RIGHT_ELBOW',
+    2:'LEFT_ELBOW',
+    3:'RIGHT_SHOULDER',
+    4:'LEFT_SHOULDER',
+    5:'RIGHT_HIP',
+    6:'LEFT_HIP',
+    7:'RIGHT_KNEE',
+    8:'LEFT_KNEE'
+}
+
+cal_list = [
+    ['RIGHT_SHOULDER', 'LEFT_ELBOW', 'RIGHT_WRIST'],
+    ['LEFT_SHOULDER', 'LEFT_ELBOW', 'LEFT_WRIST'],
+    ['LEFT_ELBOW', 'RIGHT_SHOULDER', 'RIGHT_HIP'],
+    ['LEFT_ELBOW', 'LEFT_SHOULDER', 'LEFT_HIP'],
+    ['RIGHT_SHOULDER', 'RIGHT_HIP', 'RIGHT_KNEE'],
+    ['LEFT_SHOULDER', 'LEFT_HIP','LEFT_KNEE'],
+    ['RIGHT_HIP', 'RIGHT_KNEE', 'RIGHT_ANKLE'],
+    ['LEFT_HIP','LEFT_KNEE','LEFT_ANKLE'],
+]
+
+
+
 def test():
     P = Posefunc()
     cap = cv2.VideoCapture(0)
-    path = r"./RTP/video/yoga_data/"
 
     i = 1
     IMAGE_FILES = os.listdir(path)
