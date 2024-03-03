@@ -77,7 +77,7 @@ def test():
                 # and Known_distance(centimeters)
                 try:
                     landmarks = results.pose_landmarks.landmark
-                    print(results.pose_landmarks)
+                    #print(results.pose_landmarks)
                     
 
                     angle_point = []
