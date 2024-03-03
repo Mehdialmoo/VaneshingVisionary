@@ -2,10 +2,47 @@ import cv2
 import os
 from utilities import Posefunc
 import numpy as np
+
+path = "./RTP/video/yoga_data/"
+JOINT_DIC ={ 
+    'RIGHT_ELBOW':14,
+    'LEFT_SHOULDER':11,
+    'RIGHT_SHOULDER':12,
+    'LEFT_ELBOW':13,
+    'RIGHT_WRIST':16,
+    'LEFT_WRIST':15,
+    'RIGHT_HIP':24,
+    'LEFT_HIP':23,
+    'RIGHT_KNEE':26,
+    'LEFT_KNEE':25,
+    'RIGHT_ANKLE':28,
+    'LEFT_ANKLE':27
+}
+ANGLE_LIST = {
+    'RIGHT_ELBOW',
+    'LEFT_ELBOW',
+    'RIGHT_SHOULDER',
+    'LEFT_SHOULDER',
+    'RIGHT_HIP',
+    'LEFT_HIP',
+    'RIGHT_KNEE',
+    'LEFT_KNEE'
+}
+
+CAL_LIST = [
+    ['RIGHT_SHOULDER', 'LEFT_ELBOW', 'RIGHT_WRIST'],
+    ['LEFT_SHOULDER', 'LEFT_ELBOW', 'LEFT_WRIST'],
+    ['LEFT_ELBOW', 'RIGHT_SHOULDER', 'RIGHT_HIP'],
+    ['LEFT_ELBOW', 'LEFT_SHOULDER', 'LEFT_HIP'],
+    ['RIGHT_SHOULDER', 'RIGHT_HIP', 'RIGHT_KNEE'],
+    ['LEFT_SHOULDER', 'LEFT_HIP','LEFT_KNEE'],
+    ['RIGHT_HIP', 'RIGHT_KNEE', 'RIGHT_ANKLE'],
+    ['LEFT_HIP','LEFT_KNEE','LEFT_ANKLE'],
+]
+
 def test():
     P = Posefunc()
     cap = cv2.VideoCapture(0)
-    path = r"./RTP/video/yoga_data/"
 
     i = 1
     IMAGE_FILES = os.listdir(path)
@@ -38,90 +75,19 @@ def test():
                 # and Known_distance(centimeters)
                 try:
                     landmarks = results.pose_landmarks.landmark
-                    print(results.pose_landmarks)
-                    shoulder = [
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].y,
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].z,
-                        round(
-                            landmarks[
-                                P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value
-                            ].visibility*100, 2)]
-                    elbow = [
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_ELBOW.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_ELBOW.value].y,
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_ELBOW.value].z,
-                        round(
-                            landmarks[
-                                P.MP_POSE.PoseLandmark.LEFT_ELBOW.value
-                            ].visibility*100, 2)]
-                    wrist = [
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_WRIST.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_WRIST.value].y,
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_WRIST.value].z,
-                        round(
-                            landmarks[
-                                P.MP_POSE.PoseLandmark.LEFT_WRIST.value
-                            ].visibility*100, 2)]
+                    #print(results.pose_landmarks)
+                    
 
-                    angle_point = []
-
-                    right_elbow = [
-                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_ELBOW.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_ELBOW.value].y]
-                    angle_point.append(right_elbow)
-
-                    left_elbow = [
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_ELBOW.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_ELBOW.value].y]
-                    angle_point.append(left_elbow)
-
-                    right_shoulder = [
-                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_SHOULDER.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_SHOULDER.value].y]
-                    angle_point.append(right_shoulder)
-
-                    left_shoulder = [
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].y]
-                    angle_point.append(left_shoulder)
-
-                    right_wrist = [
-                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_WRIST.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_WRIST.value].y]
-
-                    left_wrist = [
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_WRIST.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_WRIST.value].y]
-
-                    right_hip = [
-                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_HIP.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_HIP.value].y]
-                    angle_point.append(right_hip)
-
-                    left_hip = [
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_HIP.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_HIP.value].y]
-                    angle_point.append(left_hip)
-
-                    right_knee = [
-                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_KNEE.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_KNEE.value].y]
-                    angle_point.append(right_knee)
-
-                    left_knee = [
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_KNEE.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_KNEE.value].y]
-                    angle_point.append(left_knee)
-                    right_ankle = [
-                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].y]
-
-                    left_ankle = [
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_ANKLE.value].x,
-                        landmarks[P.MP_POSE.PoseLandmark.LEFT_ANKLE.value].y]
-
-                    keypoints = []
+                    angle_point = []    ### 所有计算角度需要用到的点的坐标
+                    landmark_dic = {}   ### 所有会返回准确率的joint的的坐标                 
+                    for k in JOINT_DIC:
+                        v = JOINT_DIC[k]
+                        pos = [landmarks[v].x, landmarks[v].y]
+                        landmark_dic[k] = pos
+                        if k in ANGLE_LIST:
+                            angle_point.append(pos)
+ 
+                    keypoints = []      ### 从landmarks提取出的3d坐标
                     for point in landmarks:
                         keypoints.append({
                             'X': point.x,
@@ -133,29 +99,13 @@ def test():
 
                     angle = []
 
-                    angle1 = P.calculateAngle(
-                        right_shoulder, right_elbow, right_wrist)
-                    angle.append(int(angle1))
-                    angle2 = P.calculateAngle(
-                        left_shoulder, left_elbow, left_wrist)
-                    angle.append(int(angle2))
-                    angle3 = P.calculateAngle(
-                        right_elbow, right_shoulder, right_hip)
-                    angle.append(int(angle3))
-                    angle4 = P.calculateAngle(
-                        left_elbow, left_shoulder, left_hip)
-                    angle.append(int(angle4))
-                    angle5 = P.calculateAngle(
-                        right_shoulder, right_hip, right_knee)
-                    angle.append(int(angle5))
-                    angle6 = P.calculateAngle(
-                        left_shoulder, left_hip, left_knee)
-                    angle.append(int(angle6))
-                    angle7 = P.calculateAngle(
-                        right_hip, right_knee, right_ankle)
-                    angle.append(int(angle7))
-                    angle8 = P.calculateAngle(left_hip, left_knee, left_ankle)
-                    angle.append(int(angle8))
+                    for i in range(8):
+                        ang = P.calculateAngle(
+                            landmark_dic[CAL_LIST[i][0]], 
+                            landmark_dic[CAL_LIST[i][1]],
+                            landmark_dic[CAL_LIST[i][2]])
+                        angle.append(ang)
+
 
                     P.compare_pose(image, angle_point, angle, angle_target)
                     a_score = P.diff_compare_angle(angle, angle_target)
