@@ -47,6 +47,17 @@ CAL_LIST = [
 ]
 
 
+def cal_acc(angle_list:list, target_list:list) -> list:
+    res = []
+    try :
+        for i in range(8):
+            dis = pow(((target_list[i] - angle_list[i])/180.0), 2)
+            res.append(dis)
+    except Exception as e:
+        print(e)    
+    
+    return res
+        
 
 
 
@@ -111,7 +122,10 @@ def test(P,joints_acc : queue.Queue):
                             landmark_dic[CAL_LIST[i][1]],
                             landmark_dic[CAL_LIST[i][2]])
                         angle.append(ang)
-
+                    ang_acc = cal_acc(angle,angle_target)
+                    print("========")
+                    print(ang_acc)
+                    joints_acc.put(ang_acc)
 
                     P.compare_pose(image, angle_point, angle, angle_target)
                     a_score = P.diff_compare_angle(angle, angle_target)
@@ -171,18 +185,18 @@ def serverdata(message,joints_acc:queue.Queue):
 
         if joints_acc.qsize() == 0:
             nodata = nodata + 1
-            if(nodata >= 5000):
+            if(input() or nodata >= 50000000):
                 print("Long time no data, quit")
                 running = False
                 break
         else:
             nodata = 0
             joints_acc_data = joints_acc.get()
-            joints_acc_data = json.dumps(joints_acc_data)
+            joints_acc_data = json.dumps({"score": joints_acc_data})
             sock.SendData(joints_acc_data)
         
 
-        time.sleep(0.2)
+        #time.sleep(1)
         
     
     sock.CloseSocket()

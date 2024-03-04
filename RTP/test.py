@@ -40,6 +40,19 @@ CAL_LIST = [
     ['LEFT_HIP','LEFT_KNEE','LEFT_ANKLE'],
 ]
 
+
+def cal_acc(angle_list:list, target_list:list) -> list:
+    res = []
+    try :
+        for i in range(8):
+            dis = pow(((target_list[i] - angle_list[i])/180.0), 2)
+            res.append(dis)
+    except Exception as e:
+        print(e)    
+    
+    return res
+        
+
 def test():
     P = Posefunc()
     cap = cv2.VideoCapture(0)
@@ -96,7 +109,7 @@ def test():
                         })
 
                     p_score = P.dif_compare(keypoints, point_target)
-                    print(p_score)
+                    #print(p_score)
                     angle = []
 
                     for i in range(8):
@@ -105,6 +118,8 @@ def test():
                             landmark_dic[CAL_LIST[i][1]],
                             landmark_dic[CAL_LIST[i][2]])
                         angle.append(ang)
+                    
+                    ang_acc = cal_acc(angle,angle_target)
 
 
                     P.compare_pose(image, angle_point, angle, angle_target)
