@@ -96,7 +96,7 @@ def test():
                         })
 
                     p_score = P.dif_compare(keypoints, point_target)
-
+                    print(p_score)
                     angle = []
 
                     for i in range(8):

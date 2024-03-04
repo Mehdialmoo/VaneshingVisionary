@@ -46,6 +46,10 @@ CAL_LIST = [
     ['LEFT_HIP','LEFT_KNEE','LEFT_ANKLE'],
 ]
 
+
+
+
+
 def test(P,joints_acc : queue.Queue):
     i = 1
     IMAGE_FILES = os.listdir(path)
@@ -167,7 +171,8 @@ def serverdata(message,joints_acc:queue.Queue):
 
         if joints_acc.qsize() == 0:
             nodata = nodata + 1
-            if(nodata >= 50000):
+            if(nodata >= 5000):
+                print("Long time no data, quit")
                 running = False
                 break
         else:
