@@ -165,15 +165,13 @@ if __name__ == "__main__":
     P = Posefunc()
     cap = cv2.VideoCapture(0)
 
-    hostname = socket.gethostname()
-    ipaddress = socket.gethostbyname(socket.gethostname())
     # Create UDP socket to use for sending (and receiving)
-    sock = U.UdpComms(udpIP=ipaddress, portTX=12345, portRX=12346, enableRX=True, suppressWarnings=True)
+    sock = U.UdpComms(udpIP="127.0.0.1", portTX=8000, portRX=8001, enableRX=True, suppressWarnings=True)
 
     i = 0
 
     t1 = threading.Thread(target=test, args=(P,))
-    t2 = threading.Thread(target=serverdata,args=('enter Thread2'))
+    t2 = threading.Thread(target=serverdata,args=('enter Thread2',))
 
     t1.start()
     t2.start()
