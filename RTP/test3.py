@@ -185,7 +185,7 @@ def serverdata(message,joints_acc:queue.Queue):
 
         if joints_acc.qsize() == 0:
             nodata = nodata + 1
-            if(input() or nodata >= 50000000):
+            if(nodata >= 50000000):
                 print("Long time no data, quit")
                 running = False
                 break
