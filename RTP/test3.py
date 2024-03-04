@@ -145,6 +145,22 @@ def test(P):
     cap.release()
     cv2.destroyAllWindows()
 
+
+def serverdata(message):
+    print(message)
+    while True:
+        sock.SendData('Sent from Python: ' + str(i)) # Send this string to other application
+        i += 1
+
+        data = sock.ReadReceivedData() # read data
+
+        if data != None: # if NEW data has been received since last ReadReceivedData function call
+            print(data) # print new received data
+
+        time.sleep(1)
+
+
+
 if __name__ == "__main__":
     P = Posefunc()
     cap = cv2.VideoCapture(0)
@@ -156,21 +172,11 @@ if __name__ == "__main__":
 
     i = 0
 
-    t = threading.Thread(target=test, args=(P,))
+    t1 = threading.Thread(target=test, args=(P,))
+    t2 = threading.Thread(target=serverdata,args=('enter Thread2'))
 
-    t.start()
-
-
-    while True:
-        sock.SendData('Sent from Python: ' + str(i)) # Send this string to other application
-        i += 1
-
-        data = sock.ReadReceivedData() # read data
-
-        if data != None: # if NEW data has been received since last ReadReceivedData function call
-            print(data) # print new received data
-
-        time.sleep(1)
+    t1.start()
+    t2.start()
 
 
 
