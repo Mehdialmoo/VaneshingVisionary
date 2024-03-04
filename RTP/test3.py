@@ -2,6 +2,10 @@ import cv2
 import os
 from utilities import Posefunc
 import numpy as np
+import threading
+import socket
+import UdpComms as U
+import time
 
 path = "./RTP/video/yoga_data/"
 JOINT_DIC ={ 
@@ -145,5 +149,29 @@ if __name__ == "__main__":
     P = Posefunc()
     cap = cv2.VideoCapture(0)
 
+    hostname = socket.gethostname()
+    ipaddress = socket.gethostbyname(socket.gethostname())
+    # Create UDP socket to use for sending (and receiving)
+    sock = U.UdpComms(udpIP=ipaddress, portTX=12345, portRX=12346, enableRX=True, suppressWarnings=True)
 
-    test(P)
+    i = 0
+
+    t = threading.Thread(target=test, args=(P,))
+
+    t.start()
+
+
+    while True:
+        sock.SendData('Sent from Python: ' + str(i)) # Send this string to other application
+        i += 1
+
+        data = sock.ReadReceivedData() # read data
+
+        if data != None: # if NEW data has been received since last ReadReceivedData function call
+            print(data) # print new received data
+
+        time.sleep(1)
+
+
+
+    
