@@ -6,6 +6,8 @@ import threading
 import socket
 import UdpComms as U
 import time
+import queue
+import json
 
 path = "./RTP/video/yoga_data/"
 JOINT_DIC ={ 
@@ -44,7 +46,7 @@ CAL_LIST = [
     ['LEFT_HIP','LEFT_KNEE','LEFT_ANKLE'],
 ]
 
-def test(P):
+def test(P,joints_acc : queue.Queue):
     i = 1
     IMAGE_FILES = os.listdir(path)
     resized, angle_target, point_target = P.load(path, IMAGE_FILES, i)
@@ -146,22 +148,39 @@ def test(P):
     cv2.destroyAllWindows()
 
 
-def serverdata(message):
+def serverdata(message,joints_acc:queue.Queue):
     print(message)
     i = 0
     # Create UDP socket to use for sending (and receiving)
     sock = U.UdpComms(udpIP="127.0.0.1", portTX=8000, portRX=8001, enableRX=True, suppressWarnings=True)
-    while True:
-        sock.SendData('Sent from Python: ' + str(i)) # Send this string to other application
+    running  = True
+    nodata = 0
+    while running:
+        #sock.SendData('Sent from Python: ' + str(i)) # Send this string to other application
         i += 1
 
         data = sock.ReadReceivedData() # read data
 
         if data != None: # if NEW data has been received since last ReadReceivedData function call
             print(data) # print new received data
+            nodata = 0
 
-        time.sleep(1)
+        if joints_acc.qsize() == 0:
+            nodata = nodata + 1
+            if(nodata >= 50000):
+                running = False
+                break
+        else:
+            nodata = 0
+            joints_acc_data = joints_acc.get()
+            joints_acc_data = json.dumps(joints_acc_data)
+            sock.SendData(joints_acc_data)
+        
 
+        time.sleep(0.2)
+        
+    
+    sock.CloseSocket()
 
 
 if __name__ == "__main__":
@@ -169,8 +188,10 @@ if __name__ == "__main__":
     cap = cv2.VideoCapture(0)
     i = 0
 
-    t1 = threading.Thread(target=test, args=(P,))
-    t2 = threading.Thread(target=serverdata,args=('enter Thread2',))
+    joints_acc = queue.Queue()
+
+    t1 = threading.Thread(target=test, args=(P,joints_acc,))
+    t2 = threading.Thread(target=serverdata,args=('enter Thread2',joints_acc,))
 
     t1.start()
     t2.start()
