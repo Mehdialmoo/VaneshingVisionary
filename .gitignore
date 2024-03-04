@@ -1,2 +1,4 @@
-*.txt
-./RTP/video
+VaneshingVisionary/RTP/video/*
+Untitled-1.py
+test.ipynb
+

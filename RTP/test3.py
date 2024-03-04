@@ -10,19 +10,19 @@ import queue
 import json
 
 path = "./RTP/video/yoga_data/"
-JOINT_DIC ={ 
-    'RIGHT_ELBOW':14,
-    'LEFT_SHOULDER':11,
-    'RIGHT_SHOULDER':12,
-    'LEFT_ELBOW':13,
-    'RIGHT_WRIST':16,
-    'LEFT_WRIST':15,
-    'RIGHT_HIP':24,
-    'LEFT_HIP':23,
-    'RIGHT_KNEE':26,
-    'LEFT_KNEE':25,
-    'RIGHT_ANKLE':28,
-    'LEFT_ANKLE':27
+JOINT_DIC = {
+    'RIGHT_ELBOW': 14,
+    'LEFT_SHOULDER': 11,
+    'RIGHT_SHOULDER': 12,
+    'LEFT_ELBOW': 13,
+    'RIGHT_WRIST': 16,
+    'LEFT_WRIST': 15,
+    'RIGHT_HIP': 24,
+    'LEFT_HIP': 23,
+    'RIGHT_KNEE': 26,
+    'LEFT_KNEE': 25,
+    'RIGHT_ANKLE': 28,
+    'LEFT_ANKLE': 27
 }
 ANGLE_LIST = {
     'RIGHT_ELBOW',
@@ -41,12 +41,13 @@ CAL_LIST = [
     ['LEFT_ELBOW', 'RIGHT_SHOULDER', 'RIGHT_HIP'],
     ['LEFT_ELBOW', 'LEFT_SHOULDER', 'LEFT_HIP'],
     ['RIGHT_SHOULDER', 'RIGHT_HIP', 'RIGHT_KNEE'],
-    ['LEFT_SHOULDER', 'LEFT_HIP','LEFT_KNEE'],
+    ['LEFT_SHOULDER', 'LEFT_HIP', 'LEFT_KNEE'],
     ['RIGHT_HIP', 'RIGHT_KNEE', 'RIGHT_ANKLE'],
-    ['LEFT_HIP','LEFT_KNEE','LEFT_ANKLE'],
+    ['LEFT_HIP', 'LEFT_KNEE', 'LEFT_ANKLE'],
 ]
 
-def test(P,joints_acc : queue.Queue):
+
+def test(P, joints_acc: queue.Queue):
     i = 1
     IMAGE_FILES = os.listdir(path)
     resized, angle_target, point_target = P.load(path, IMAGE_FILES, i)
@@ -77,19 +78,18 @@ def test(P,joints_acc : queue.Queue):
                 # and Known_distance(centimeters)
                 try:
                     landmarks = results.pose_landmarks.landmark
-                    #print(results.pose_landmarks)
-                    
+                    # print(results.pose_landmarks)
 
-                    angle_point = []    ### 所有计算角度需要用到的点的坐标
-                    landmark_dic = {}   ### 所有会返回准确率的joint的的坐标                 
+                    angle_point = []  # 所有计算角度需要用到的点的坐标
+                    landmark_dic = {}  # 所有会返回准确率的joint的的坐标
                     for k in JOINT_DIC:
                         v = JOINT_DIC[k]
                         pos = [landmarks[v].x, landmarks[v].y]
                         landmark_dic[k] = pos
                         if k in ANGLE_LIST:
                             angle_point.append(pos)
- 
-                    keypoints = []      ### 从landmarks提取出的3d坐标
+
+                    keypoints = []  # 从landmarks提取出的3d坐标
                     for point in landmarks:
                         keypoints.append({
                             'X': point.x,
@@ -103,11 +103,10 @@ def test(P,joints_acc : queue.Queue):
 
                     for i in range(8):
                         ang = P.calculateAngle(
-                            landmark_dic[CAL_LIST[i][0]], 
+                            landmark_dic[CAL_LIST[i][0]],
                             landmark_dic[CAL_LIST[i][1]],
                             landmark_dic[CAL_LIST[i][2]])
                         angle.append(ang)
-
 
                     P.compare_pose(image, angle_point, angle, angle_target)
                     a_score = P.diff_compare_angle(angle, angle_target)
@@ -148,26 +147,31 @@ def test(P,joints_acc : queue.Queue):
     cv2.destroyAllWindows()
 
 
-def serverdata(message,joints_acc:queue.Queue):
+def serverdata(message, joints_acc: queue.Queue):
     print(message)
     i = 0
     # Create UDP socket to use for sending (and receiving)
-    sock = U.UdpComms(udpIP="127.0.0.1", portTX=8000, portRX=8001, enableRX=True, suppressWarnings=True)
-    running  = True
+    sock = U.UdpComms(
+        udpIP="127.0.0.1", portTX=8000,
+        portRX=8001, enableRX=True,
+        suppressWarnings=True)
+    running = True
     nodata = 0
     while running:
-        #sock.SendData('Sent from Python: ' + str(i)) # Send this string to other application
+        # sock.SendData('Sent from Python: ' + str(i))
+        # Send this string to other application
         i += 1
 
-        data = sock.ReadReceivedData() # read data
+        data = sock.ReadReceivedData()  # read data
 
-        if data != None: # if NEW data has been received since last ReadReceivedData function call
-            print(data) # print new received data
+        if data != None:
+            # if NEW data has been received since last ReadReceivedData function call
+            print(data)  # print new received data
             nodata = 0
 
         if joints_acc.qsize() == 0:
             nodata = nodata + 1
-            if(nodata >= 50000):
+            if (nodata >= 50000):
                 running = False
                 break
         else:
@@ -175,11 +179,9 @@ def serverdata(message,joints_acc:queue.Queue):
             joints_acc_data = joints_acc.get()
             joints_acc_data = json.dumps(joints_acc_data)
             sock.SendData(joints_acc_data)
-        
 
         time.sleep(0.2)
-        
-    
+
     sock.CloseSocket()
 
 
@@ -190,12 +192,9 @@ if __name__ == "__main__":
 
     joints_acc = queue.Queue()
 
-    t1 = threading.Thread(target=test, args=(P,joints_acc,))
-    t2 = threading.Thread(target=serverdata,args=('enter Thread2',joints_acc,))
+    t1 = threading.Thread(target=test, args=(P, joints_acc,))
+    t2 = threading.Thread(target=serverdata, args=(
+        'enter Thread2', joints_acc,))
 
     t1.start()
     t2.start()
-
-
-
-    
