@@ -17,7 +17,7 @@ JOINT_DIC = {
     'RIGHT_ANKLE': 28,
     'LEFT_ANKLE': 27
 }
-ANGLE_LIST = {
+ANGLE_LIST = [
     'RIGHT_ELBOW',
     'LEFT_ELBOW',
     'RIGHT_SHOULDER',
@@ -26,7 +26,7 @@ ANGLE_LIST = {
     'LEFT_HIP',
     'RIGHT_KNEE',
     'LEFT_KNEE'
-}
+]
 
 CAL_LIST = [
     ['RIGHT_SHOULDER', 'LEFT_ELBOW', 'RIGHT_WRIST'],
