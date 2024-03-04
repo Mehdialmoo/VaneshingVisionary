@@ -148,6 +148,9 @@ def test(P):
 
 def serverdata(message):
     print(message)
+    i = 0
+    # Create UDP socket to use for sending (and receiving)
+    sock = U.UdpComms(udpIP="127.0.0.1", portTX=8000, portRX=8001, enableRX=True, suppressWarnings=True)
     while True:
         sock.SendData('Sent from Python: ' + str(i)) # Send this string to other application
         i += 1
@@ -164,10 +167,6 @@ def serverdata(message):
 if __name__ == "__main__":
     P = Posefunc()
     cap = cv2.VideoCapture(0)
-
-    # Create UDP socket to use for sending (and receiving)
-    sock = U.UdpComms(udpIP="127.0.0.1", portTX=8000, portRX=8001, enableRX=True, suppressWarnings=True)
-
     i = 0
 
     t1 = threading.Thread(target=test, args=(P,))
