@@ -2,6 +2,7 @@ import cv2
 import mediapipe as mp
 import numpy as np
 import pandas as pd
+import os
 
 # import time
 # import datetime
@@ -46,12 +47,12 @@ class Posefunc:
         count = 0
 
         with self.MP_POSE.Pose(
-            min_detection_confidence=0.5,
-            min_tracking_confidence=0.5) as pose:
+                min_detection_confidence=0.5,
+                min_tracking_confidence=0.5) as pose:
 
             image = cv2.imread(path)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-            # image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+
             image.flags.writeable = False
             results = pose.process(image)
             image.flags.writeable = True
@@ -134,7 +135,16 @@ class Posefunc:
                         self.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].x,
                     landmarks[
                         self.MP_POSE.PoseLandmark.RIGHT_ANKLE.value].y]
-
+                angle_Lst = [
+                    right_elbow,
+                    left_elbow,
+                    right_shoulder,
+                    left_shoulder,
+                    right_hip,
+                    left_hip,
+                    right_knee,
+                    left_knee
+                ]
                 joints = []
                 joint_list = pd.DataFrame([])
 
@@ -188,86 +198,17 @@ class Posefunc:
                     left_hip, left_knee, left_ankle)
                 angle.append(int(angle8))
 
-                cv2.putText(image,
-                            str(1),
-                            tuple(np.multiply(right_elbow, [
-                                image_w, image_h,]).astype(int)),
-                            cv2.FONT_HERSHEY_SIMPLEX,
-                            0.5,
-                            [255, 255, 0],
-                            2,
-                            cv2.LINE_AA
-                            )
-                cv2.putText(image,
-                            str(2),
-                            tuple(np.multiply(left_elbow, [
-                                image_w, image_h]).astype(int)),
-                            cv2.FONT_HERSHEY_SIMPLEX,
-                            0.5,
-                            [255, 255, 0],
-                            2,
-                            cv2.LINE_AA
-                            )
-                cv2.putText(image,
-                            str(3),
-                            tuple(np.multiply(right_shoulder, [
-                                image_w, image_h]).astype(int)),
-                            cv2.FONT_HERSHEY_SIMPLEX,
-                            0.5,
-                            [255, 255, 0],
-                            2,
-                            cv2.LINE_AA
-                            )
-                cv2.putText(image,
-                            str(4),
-                            tuple(np.multiply(left_shoulder, [
-                                image_w, image_h]).astype(int)),
-                            cv2.FONT_HERSHEY_SIMPLEX,
-                            0.5,
-                            [255, 255, 0],
-                            2,
-                            cv2.LINE_AA
-                            )
-                cv2.putText(image,
-                            str(5),
-                            tuple(np.multiply(right_hip, [
-                                image_w, image_h]).astype(int)),
-                            cv2.FONT_HERSHEY_SIMPLEX,
-                            0.5,
-                            [255, 255, 0],
-                            2,
-                            cv2.LINE_AA
-                            )
-                cv2.putText(image,
-                            str(6),
-                            tuple(np.multiply(
-                                left_hip, [image_w, image_h]).astype(int)),
-                            cv2.FONT_HERSHEY_SIMPLEX,
-                            0.5,
-                            [255, 255, 0],
-                            2,
-                            cv2.LINE_AA
-                            )
-                cv2.putText(image,
-                            str(7),
-                            tuple(np.multiply(right_knee, [
-                                image_w, image_h]).astype(int)),
-                            cv2.FONT_HERSHEY_SIMPLEX,
-                            0.5,
-                            [255, 255, 0],
-                            2,
-                            cv2.LINE_AA
-                            )
-                cv2.putText(image,
-                            str(8),
-                            tuple(np.multiply(left_knee, [
-                                image_w, image_h]).astype(int)),
-                            cv2.FONT_HERSHEY_SIMPLEX,
-                            0.5,
-                            [255, 255, 0],
-                            2,
-                            cv2.LINE_AA
-                            )
+                for idx, agl in enumerate(angle_Lst):
+                    cv2.putText(image,
+                                str(idx+1),
+                                tuple(np.multiply(agl, [
+                                    image_w, image_h,]).astype(int)),
+                                cv2.FONT_HERSHEY_SIMPLEX,
+                                0.5,
+                                [255, 255, 0],
+                                2,
+                                cv2.LINE_AA
+                                )
 
     #             if angle >120:
     #                 stage = "down"
@@ -285,79 +226,21 @@ class Posefunc:
                 image, 'ID', (10, 14),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.6,
                 [0, 0, 255], 2, cv2.LINE_AA)
-            cv2.putText(
-                image, str(1), (10, 40),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.putText(
-                image, str(2), (10, 70),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.putText(
-                image, str(3), (10, 100),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.putText(
-                image, str(4), (10, 130),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.putText(
-                image, str(5), (10, 160),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.putText(
-                image, str(6), (10, 190),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.putText(
-                image, str(7), (10, 220),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.putText(
-                image, str(8), (10, 250),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                [0, 153, 0], 2, cv2.LINE_AA)
+            for i in range(1, 9):
+                cv2.putText(
+                    image, str(i), (10, ((i*30)+10)),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
             # ====================================================================
             cv2.putText(
                 image, 'Angle', (40, 12),
                 cv2.FONT_HERSHEY_SIMPLEX, 0.6,
                 [0, 0, 255], 2, cv2.LINE_AA)
-            cv2.putText(
-                image, str(int(angle[0])), (40, 40),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.putText(
-                image, str(int(angle[1])), (40, 70),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.putText(
-                image, str(int(angle[2])), (40, 100),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                [0, 153, 0], 2, cv2.LINE_AA)
-
-            cv2.putText(
-                image, str(int(angle[3])), (40, 130),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                [0, 153, 0], 2, cv2.LINE_AA)
-
-            cv2.putText(
-                image, str(int(angle[4])), (40, 160),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                [0, 153, 0], 2, cv2.LINE_AA)
-
-            cv2.putText(
-                image, str(int(angle[5])), (40, 190),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                [0, 153, 0], 2, cv2.LINE_AA)
-
-            cv2.putText(image, str(int(angle[6])), (40, 220),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                        [0, 153, 0], 2, cv2.LINE_AA)
-
-            cv2.putText(image, str(int(angle[7])), (40, 250),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                        [0, 153, 0], 2, cv2.LINE_AA)
-
+            for i in range(8):
+                cv2.putText(
+                    image, str(int(angle[i])), ((40, (i*30)+40)),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    [0, 153, 0], 2, cv2.LINE_AA)
             # ====================================================================
             # Render detections
             self.MP_DRAWING.draw_landmarks(
@@ -551,167 +434,44 @@ class Posefunc:
         cv2.putText(image, str("Score:"), (10, 30),
                     cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
         height, width, _ = image.shape
-        # ====================================================================
-        if angle_user[0] < (angle_target[0] - 15):
-            # print("Extend the right arm at elbow")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Extend the right arm at elbow"),
-                (10, 60),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[0][0]*width),
-                int(angle_point[0][1]*height)), 30, (0, 0, 255), 5)
-        # ====================================================================
-        if angle_user[0] > (angle_target[0] + 15):
-            # print("Fold the right arm at elbow")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Fold the right arm at elbow"), (10, 80),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[0][0]*width),
-                int(angle_point[0][1]*height)), 30, (0, 0, 255), 5)
-        # ====================================================================
-        if angle_user[1] < (angle_target[1] - 15):
-            # print("Extend the left arm at elbow")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Extend the left arm at elbow"), (10, 100),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[1][0]*width),
-                int(angle_point[1][1]*height)), 30, (0, 0, 255), 5)
-        # ====================================================================
-        if angle_user[1] > (angle_target[1] + 15):
-            # print("Fold the left arm at elbow")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Fold the left arm at elbow"), (10, 120),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[1][0]*width),
-                int(angle_point[1][1]*height)), 30, (0, 0, 255), 5)
-        # ====================================================================
-        if angle_user[2] < (angle_target[2] - 15):
-            # print("Lift your right arm")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Lift your right arm"), (10, 140),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[2][0]*width),
-                int(angle_point[2][1]*height)), 30, (0, 0, 255), 5)
-        # ====================================================================
-        if angle_user[2] > (angle_target[2] + 15):
-            # print("Put your arm down a little")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Put your arm down a little"), (10, 160),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[2][0]*width),
-                int(angle_point[2][1]*height)), 30, (0, 0, 255), 5)
-        # ====================================================================
-        if angle_user[3] < (angle_target[3] - 15):
-            # print("Lift your left arm")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Lift your left arm"), (10, 180),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[3][0]*width),
-                int(angle_point[3][1]*height)), 30, (0, 0, 255), 5)
 
-        if angle_user[3] > (angle_target[3] + 15):
-            # print("Put your arm down a little")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Put your arm down a little"), (10, 200),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[3][0]*width),
-                int(angle_point[3][1]*height)), 30, (0, 0, 255), 5)
+        text_list = [
+            ["Extend the right arm at elbow",
+                "Fold the right arm at elbow"],  # 0
+            ["Extend the left arm at elbow",
+                "Fold the left arm at elbow"],  # 1
+            ["Lift your right arm",
+                "Put your right arm down a little"],  # 2
+            ["Lift your left arm",
+                "Put your arm down a little"],  # 3
+            ["Extend the angle at right hip",
+                "Reduce the angle of at right hip"],  # 4
+            ["Extend the angle at left hip",
+                "Reduce the angle at left hip"],  # 5
+            ["Extend the angle of right knee",
+                "Reduce the angle at right knee"],  # 6
+            ["Extend the angle at left knee",
+                "Reduce the angle at left knee"]  # 7
+        ]
 
-        if angle_user[4] < (angle_target[4] - 15):
-            # print("Extend the angle at right hip")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Extend the angle at right hip"), (10, 220),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[4][0]*width),
-                int(angle_point[4][1]*height)), 30, (0, 0, 255), 5)
+        for i in range(len(angle_user)):
+            if angle_user[i] < (angle_target[i] - 15):
+                stage += 1
+                cv2.putText(
+                    image, str(text_list[i][0]), (10, ((i*40)+60)),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
+                cv2.circle(image, (
+                    int(angle_point[i][0]*width),
+                    int(angle_point[i][1]*height)), 30, (0, 0, 255), 5)
 
-        if angle_user[4] > (angle_target[4] + 15):
-            # print("Reduce the angle at right hip")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Reduce the angle of at right hip"), (10, 240),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[4][0]*width),
-                int(angle_point[4][1]*height)), 30, (0, 0, 255), 5)
-
-        if angle_user[5] < (angle_target[5] - 15):
-            # print("Extend the angle at left hip")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Extend the angle at left hip"), (10, 260),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[5][0]*width),
-                int(angle_point[5][1]*height)), 30, (0, 0, 255), 5)
-
-        if angle_user[5] > (angle_target[5] + 15):
-            # print("Reduce the angle at left hip")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Reduce the angle at left hip"), (10, 280),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[5][0]*width),
-                int(angle_point[5][1]*height)), 30, (0, 0, 255), 5)
-
-        if angle_user[6] < (angle_target[6] - 15):
-            # print("Extend the angle of right knee")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Extend the angle of right knee"), (10, 300),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[6][0]*width),
-                int(angle_point[6][1]*height)), 30, (0, 0, 255), 5)
-
-        if angle_user[6] > (angle_target[6] + 15):
-            # print("Reduce the angle of right knee")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Reduce the angle at right knee"), (10, 320),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[6][0]*width),
-                int(angle_point[6][1]*height)), 30, (0, 0, 255), 5)
-
-        if angle_user[7] < (angle_target[7] - 15):
-            # print("Extend the angle at left knee")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Extend the angle at left knee"), (10, 340),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[7][0]*width),
-                int(angle_point[7][1]*height)), 30, (0, 0, 255), 5)
-
-        if angle_user[7] > (angle_target[7] + 15):
-            # print("Reduce the angle at left knee")
-            stage = stage + 1
-            cv2.putText(
-                image, str("Reduce the angle at left knee"), (10, 360),
-                cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-            cv2.circle(image, (
-                int(angle_point[7][0]*width),
-                int(angle_point[7][1]*height)), 30, (0, 0, 255), 5)
+            if angle_user[i] > (angle_target[i] + 15):
+                stage += 1
+                cv2.putText(
+                    image, str(text_list[i][1]), (10, ((i*40)+80)),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
+                cv2.circle(image, (
+                    int(angle_point[i][0]*width),
+                    int(angle_point[i][1]*height)), 30, (0, 0, 255), 5)
 
         if stage != 0:
             # print("FIGHTING!")
@@ -726,7 +486,7 @@ class Posefunc:
                 image, str("PERFECT"), (170, 30),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, [0, 0, 255], 2, cv2.LINE_AA)
 
-    def Average(lst):
+    def Average(self, lst):
         return sum(lst) / len(lst)
 
     def dif_compare(self, x, y):
@@ -736,8 +496,17 @@ class Posefunc:
                 spatial.distance.cosine(
                     list(x[i].values()), list(y[j].values()))
             average = np.append(average, result)
-        score = math.sqrt(2*(1-round((sum(average)/len(average)), 2)))
+        score = math.sqrt(2*(1-round((self.Average(average)), 2)))
         # print(Average(average))
+        return score
+
+    def diff_compare(self, x, y):
+        average = []
+        for i, j in zip(range(len(x)), range(len(y))):
+            result = 1 - spatial.distance.cosine(x[i], y[j])
+            average.append(result)
+        score = math.sqrt(2*(1-round(self.Average(average), 2)))
+        print(self.Average(average))
         return score
 
     def diff_compare_angle(self, x, y):
@@ -746,7 +515,7 @@ class Posefunc:
             z = np.abs(x[i] - y[j])/((x[i] + y[j])/2)
             new_x.append(z)
             # print(new_x[i])
-        return (sum(new_x)/len(new_x))
+        return (self.Average(new_x))
 
     @staticmethod
     def convert_data(landmarks):
@@ -780,18 +549,9 @@ class Posefunc:
             print(x[i])
         return new_x
 
-    def diff_compare(self, x, y):
-        average = []
-        for i, j in zip(range(len(x)), range(len(y))):
-            result = 1 - spatial.distance.cosine(x[i], y[j])
-            average.append(result)
-        score = math.sqrt(2*(1-round(self.Average(average), 2)))
-        print(self.Average(average))
-        return score
-
-    def load(self, dir, filename, num):
-        global i
-        x = self.extractKeypoint(dir+filename[num])
+    def load(self, dir, num):
+        filenames = os.listdir(dir)
+        x = self.extractKeypoint(dir+"\\"+filenames[num])
         resized = cv2.resize(x[3], (860, 960), interpolation=cv2.INTER_AREA)
         angle_target = x[2]
         point_target = x[1]
