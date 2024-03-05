@@ -1,6 +1,8 @@
 import cv2
-from utilities import Posefunc
 import numpy as np
+import time
+
+from utilities import Posefunc
 
 path = r"D:\git ex\gp\VaneshingVisionary\RTP\video\yoga_data"
 JOINT_DIC = {
@@ -41,7 +43,9 @@ CAL_LIST = [
 
 
 def test():
+    t_b = 0
     for i in range(16):
+        acc = []
         P = Posefunc()
         cap = cv2.VideoCapture(0)
 
@@ -110,12 +114,27 @@ def test():
                         a_score = P.diff_compare_angle(angle, angle_target)
 
                         if (p_score >= a_score):
+                            if t_b == 0 and (1-a_score >= 0.8):
+                                t1 = time.time()
+                                acc.append(a_score)
+                                t_b = 1
+                            if (1-a_score >= 0.8) and ((time.time()-t1) < 10):
+                                acc.append(a_score)
+
+                            if ((time.time()-t1) > 10) and (t_b != 0):
+                                print(1-P.Average(acc))
+                                t_b = 0
+                                break
+
                             cv2.putText(
                                 image, str(int((1 - a_score)*100)), (80, 30),
                                 cv2.FONT_HERSHEY_SIMPLEX, 1,
                                 [0, 0, 255], 2, cv2.LINE_AA)
 
                         else:
+                            acc.clear()
+                            t_b = 0
+                            t1 = time.time()
                             cv2.putText(
                                 image, str(int((1 - p_score)*100)), (80, 30),
                                 cv2.FONT_HERSHEY_SIMPLEX, 1,
@@ -141,9 +160,9 @@ def test():
                     # cv2.imshow('MediaPipe Feed', hori)
                     cv2.imshow('MediaPipe Feed', hori)
                     # cv2.imshow("Camera", resized_frame)
-                if cv2.waitKey(10) & 0xFF == ord('n'):
+                if cv2.waitKey(2) & 0xFF == ord('n'):
                     break
-                elif cv2.waitKey(10) & 0xFF == ord('q'):
+                elif cv2.waitKey(2) & 0xFF == ord('q'):
                     exit(0)
         cap.release()
         cv2.destroyAllWindows()
