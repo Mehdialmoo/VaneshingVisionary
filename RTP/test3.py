@@ -62,7 +62,7 @@ def cal_acc(angle_list:list, target_list:list) -> list:
 
 
 def test(P,joints_acc : queue.Queue):
-    i = 1
+    i = 0
     IMAGE_FILES = os.listdir(path)
     resized, angle_target, point_target = P.load(path, IMAGE_FILES, i)
 
@@ -208,7 +208,6 @@ def serverdata(message, joints_acc: queue.Queue):
 if __name__ == "__main__":
     P = Posefunc()
     cap = cv2.VideoCapture(0)
-    i = 0
 
     joints_acc = queue.Queue()
 

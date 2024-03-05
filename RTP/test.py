@@ -4,7 +4,7 @@ import time
 
 from utilities import Posefunc
 
-path = r"D:\git ex\gp\VaneshingVisionary\RTP\video\yoga_data"
+path = r"./RTP/video/yoga_data"
 JOINT_DIC = {
     'RIGHT_ELBOW': 14,
     'LEFT_SHOULDER': 11,
@@ -116,44 +116,44 @@ def test():
 
                         angle = []
 
-                    for i in range(8):
-                        ang = P.calculateAngle(
-                            landmark_dic[CAL_LIST[i][0]], 
-                            landmark_dic[CAL_LIST[i][1]],
-                            landmark_dic[CAL_LIST[i][2]])
-                        angle.append(ang)
-                    
-                    ang_acc = cal_acc(angle,angle_target)
+                        for i in range(8):
+                            ang = P.calculateAngle(
+                                landmark_dic[CAL_LIST[i][0]], 
+                                landmark_dic[CAL_LIST[i][1]],
+                                landmark_dic[CAL_LIST[i][2]])
+                            angle.append(ang)
+                        
+                        ang_acc = cal_acc(angle,angle_target)
 
                         P.compare_pose(image, angle_point, angle, angle_target)
                         a_score = P.diff_compare_angle(angle, angle_target)
 
-                        if (p_score >= a_score):
-                            if t_b == 0 and (1-a_score >= 0.8):
-                                t1 = time.time()
-                                acc.append(a_score)
-                                t_b = 1
-                            if (1-a_score >= 0.8) and ((time.time()-t1) < 10):
-                                acc.append(a_score)
+                        # if (p_score >= a_score):
+                        #     if t_b == 0 and (1-a_score >= 0.8):
+                        #         t1 = time.time()
+                        #         acc.append(a_score)
+                        #         t_b = 1
+                        #     if (1-a_score >= 0.8) and ((time.time()-t1) < 10):
+                        #         acc.append(a_score)
 
-                            if ((time.time()-t1) > 10) and (t_b != 0):
-                                print(1-P.Average(acc))
-                                t_b = 0
-                                break
+                        #     if ((time.time()-t1) > 10) and (t_b != 0):
+                        #         print(1-P.Average(acc))
+                        #         t_b = 0
+                        #         break
 
-                            cv2.putText(
-                                image, str(int((1 - a_score)*100)), (80, 30),
-                                cv2.FONT_HERSHEY_SIMPLEX, 1,
-                                [0, 0, 255], 2, cv2.LINE_AA)
+                        #     cv2.putText(
+                        #         image, str(int((1 - a_score)*100)), (80, 30),
+                        #         cv2.FONT_HERSHEY_SIMPLEX, 1,
+                        #         [0, 0, 255], 2, cv2.LINE_AA)
 
-                        else:
-                            acc.clear()
-                            t_b = 0
-                            t1 = time.time()
-                            cv2.putText(
-                                image, str(int((1 - p_score)*100)), (80, 30),
-                                cv2.FONT_HERSHEY_SIMPLEX, 1,
-                                [0, 0, 255], 2, cv2.LINE_AA)
+                        # else:
+                        #     acc.clear()
+                        #     t_b = 0
+                        #     t1 = time.time()
+                        #     cv2.putText(
+                        #         image, str(int((1 - p_score)*100)), (80, 30),
+                        #         cv2.FONT_HERSHEY_SIMPLEX, 1,
+                        #         [0, 0, 255], 2, cv2.LINE_AA)
 
                     except Exception as e:
                         print("Error in drawing bones", e)
