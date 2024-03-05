@@ -134,6 +134,7 @@ def test():
                             if ((time.time() - t1) > 5) and (t_b == 1):
                                 print("finish")
                                 print(1-P.Average(acc))
+                                print(ang_acc)
                                 acc.clear()
                                 t_b = 0
                                 t1 = None
