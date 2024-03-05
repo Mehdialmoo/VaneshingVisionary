@@ -62,8 +62,6 @@ class Posefunc:
             try:
                 landmarks = results.pose_landmarks.landmark
 
-                # print(len(landmarks))  # check later .... txt util 63-75
-
                 left_shoulder = [
                     landmarks[
                         self.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].x,
@@ -486,7 +484,7 @@ class Posefunc:
                 image, str("PERFECT"), (170, 30),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, [0, 0, 255], 2, cv2.LINE_AA)
 
-    def Average(self, lst):
+    def Average(self, lst) -> float:
         return sum(lst) / len(lst)
 
     def dif_compare(self, x, y):
@@ -500,7 +498,7 @@ class Posefunc:
         # print(Average(average))
         return score
 
-    def diff_compare(self, x, y):
+    def diff_compare(self, x, y) -> float:
         average = []
         for i, j in zip(range(len(x)), range(len(y))):
             result = 1 - spatial.distance.cosine(x[i], y[j])
@@ -509,13 +507,24 @@ class Posefunc:
         print(self.Average(average))
         return score
 
-    def diff_compare_angle(self, x, y):
+    def diff_compare_angle(self, x, y) -> float:
         new_x = []
         for i, j in zip(range(len(x)), range(len(y))):
             z = np.abs(x[i] - y[j])/((x[i] + y[j])/2)
             new_x.append(z)
             # print(new_x[i])
         return (self.Average(new_x))
+
+    def cal_acc(self, angle_list: list, target_list: list) -> list:
+        res = []
+        try:
+            for i in range(8):
+                dis = pow(((target_list[i] - angle_list[i])/180.0), 2)
+                res.append(dis)
+        except Exception as e:
+            print(e)
+
+        return res
 
     @staticmethod
     def convert_data(landmarks):

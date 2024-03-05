@@ -4,7 +4,8 @@ import time
 
 from utilities import Posefunc
 
-path = r"./RTP/video/yoga_data"
+# path = r"./RTP/video/yoga_data"
+path = r"D:\git ex\VaneshingVisionary\RTP\video\yoga_data"
 JOINT_DIC = {
     'RIGHT_ELBOW': 14,
     'LEFT_SHOULDER': 11,
@@ -42,25 +43,13 @@ CAL_LIST = [
 ]
 
 
-
-def cal_acc(angle_list:list, target_list:list) -> list:
-    res = []
-    try :
-        for i in range(8):
-            dis = pow(((target_list[i] - angle_list[i])/180.0), 2)
-            res.append(dis)
-    except Exception as e:
-        print(e)    
-    
-    return res
-        
-
 def test():
-    t_b = 0
     for i in range(16):
-        acc = []
         P = Posefunc()
         cap = cv2.VideoCapture(0)
+        t_b = 0
+        t1 = None
+        acc = []
 
         resized, angle_target, point_target = P.load(path, i)
 
@@ -118,42 +107,49 @@ def test():
 
                         for i in range(8):
                             ang = P.calculateAngle(
-                                landmark_dic[CAL_LIST[i][0]], 
+                                landmark_dic[CAL_LIST[i][0]],
                                 landmark_dic[CAL_LIST[i][1]],
                                 landmark_dic[CAL_LIST[i][2]])
                             angle.append(ang)
-                        
-                        ang_acc = cal_acc(angle,angle_target)
+
+                        ang_acc = P.cal_acc(
+                            angle_list=angle, target_list=angle_target)
 
                         P.compare_pose(image, angle_point, angle, angle_target)
                         a_score = P.diff_compare_angle(angle, angle_target)
 
                         # if (p_score >= a_score):
-                        #     if t_b == 0 and (1-a_score >= 0.8):
-                        #         t1 = time.time()
-                        #         acc.append(a_score)
-                        #         t_b = 1
-                        #     if (1-a_score >= 0.8) and ((time.time()-t1) < 10):
-                        #         acc.append(a_score)
+                        if (1-a_score >= 0.70):
+                            cv2.putText(
+                                image, str(
+                                    int((1 - a_score)*100)), (80, 30),
+                                cv2.FONT_HERSHEY_SIMPLEX, 1,
+                                [0, 0, 255], 2, cv2.LINE_AA)
 
-                        #     if ((time.time()-t1) > 10) and (t_b != 0):
-                        #         print(1-P.Average(acc))
-                        #         t_b = 0
-                        #         break
+                            if (t_b == 0):
+                                print("start")
+                                t1 = time.time()
+                                acc.append(a_score)
+                                t_b = 1
+                            if ((time.time() - t1) > 5) and (t_b == 1):
+                                print("finish")
+                                print(1-P.Average(acc))
+                                acc.clear()
+                                t_b = 0
+                                t1 = None
+                                break
+                            if (t_b == 1):
+                                print("add")
+                                acc.append(a_score)
 
-                        #     cv2.putText(
-                        #         image, str(int((1 - a_score)*100)), (80, 30),
-                        #         cv2.FONT_HERSHEY_SIMPLEX, 1,
-                        #         [0, 0, 255], 2, cv2.LINE_AA)
-
-                        # else:
-                        #     acc.clear()
-                        #     t_b = 0
-                        #     t1 = time.time()
-                        #     cv2.putText(
-                        #         image, str(int((1 - p_score)*100)), (80, 30),
-                        #         cv2.FONT_HERSHEY_SIMPLEX, 1,
-                        #         [0, 0, 255], 2, cv2.LINE_AA)
+                        else:
+                            acc.clear()
+                            t_b = 0
+                            t1 = None
+                            cv2.putText(
+                                image, str(int((1 - p_score)*100)), (80, 30),
+                                cv2.FONT_HERSHEY_SIMPLEX, 1,
+                                [0, 0, 255], 2, cv2.LINE_AA)
 
                     except Exception as e:
                         print("Error in drawing bones", e)
@@ -175,9 +171,9 @@ def test():
                     # cv2.imshow('MediaPipe Feed', hori)
                     cv2.imshow('MediaPipe Feed', hori)
                     # cv2.imshow("Camera", resized_frame)
-                if cv2.waitKey(2) & 0xFF == ord('n'):
+                if cv2.waitKey(1) & 0xFF == ord('n'):
                     break
-                elif cv2.waitKey(2) & 0xFF == ord('q'):
+                elif cv2.waitKey(1) & 0xFF == ord('q'):
                     exit(0)
         cap.release()
         cv2.destroyAllWindows()
