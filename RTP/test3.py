@@ -57,7 +57,7 @@ def test(P, joints_acc: queue.Queue):
         t1 = None
         acc = []
 
-        resized, angle_target, point_target = P.load(path, IMAGE_FILES, i)
+        resized, angle_target, point_target = P.load(path, i)
 
         with P.MP_POSE.Pose(min_detection_confidence=0.5,
                             min_tracking_confidence=0.5) as pose:
@@ -174,7 +174,7 @@ def test(P, joints_acc: queue.Queue):
                     # txt test 150-*
                     hori = np.concatenate((image, resized), axis=1)
                     # cv2.imshow('MediaPipe Feed', hori)
-                    cv2.imshow('MediaPipe Feed', hori)
+                    cv2.imshow('MediaPipe Feed', image)
                     # cv2.imshow("Camera", resized_frame)
                 if cv2.waitKey(10) & 0xFF == ord('q'):
                     break

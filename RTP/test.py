@@ -45,8 +45,8 @@ CAL_LIST = [
 
 def test():
     for i in range(16):
-        P = Posefunc()
         cap = cv2.VideoCapture(0)
+        P = Posefunc()
         t_b = 0
         t1 = None
         acc = []
@@ -84,76 +84,77 @@ def test():
                         landmarks = results.pose_landmarks.landmark
                         # print(results.pose_landmarks)
 
-                        angle_point = []  # 所有计算角度需要用到的点的坐标
-                        landmark_dic = {}  # 所有会返回准确率的joint的的坐标
-                        for k in JOINT_DIC:
-                            v = JOINT_DIC[k]
-                            pos = [landmarks[v].x, landmarks[v].y]
-                            landmark_dic[k] = pos
-                            if k in ANGLE_LIST:
-                                angle_point.append(pos)
+                    except Exception as e:
+                        print("landmarks err:", e)
+                        continue
 
-                        keypoints = []  # 从landmarks提取出的3d坐标
-                        for point in landmarks:
-                            keypoints.append({
-                                'X': point.x,
-                                'Y': point.y,
-                                'Z': point.z,
-                            })
+                    angle_point = []  # 所有计算角度需要用到的点的坐标
+                    landmark_dic = {}  # 所有会返回准确率的joint的的坐标
+                    for k in JOINT_DIC:
+                        v = JOINT_DIC[k]
+                        pos = [landmarks[v].x, landmarks[v].y]
+                        landmark_dic[k] = pos
+                        if k in ANGLE_LIST:
+                            angle_point.append(pos)
 
-                        p_score = P.dif_compare(keypoints, point_target)
+                    keypoints = []  # 从landmarks提取出的3d坐标
+                    for point in landmarks:
+                        keypoints.append({
+                            'X': point.x,
+                            'Y': point.y,
+                            'Z': point.z,
+                        })
 
-                        angle = []
+                    p_score = P.dif_compare(keypoints, point_target)
 
-                        for i in range(8):
-                            ang = P.calculateAngle(
-                                landmark_dic[CAL_LIST[i][0]],
-                                landmark_dic[CAL_LIST[i][1]],
-                                landmark_dic[CAL_LIST[i][2]])
-                            angle.append(ang)
+                    angle = []
 
-                        ang_acc = P.cal_acc(
-                            angle_list=angle, target_list=angle_target)
+                    for i in range(8):
+                        ang = P.calculateAngle(
+                            landmark_dic[CAL_LIST[i][0]],
+                            landmark_dic[CAL_LIST[i][1]],
+                            landmark_dic[CAL_LIST[i][2]])
+                        angle.append(ang)
 
-                        P.compare_pose(image, angle_point, angle, angle_target)
-                        a_score = P.diff_compare_angle(angle, angle_target)
+                    ang_acc = P.cal_acc(
+                        angle_list=angle, target_list=angle_target)
 
-                        # if (p_score >= a_score):
-                        if (1-a_score >= 0.70):
-                            cv2.putText(
-                                image, str(
-                                    int((1 - a_score)*100)), (80, 30),
-                                cv2.FONT_HERSHEY_SIMPLEX, 1,
-                                [0, 0, 255], 2, cv2.LINE_AA)
+                    P.compare_pose(image, angle_point, angle, angle_target)
+                    a_score = P.diff_compare_angle(angle, angle_target)
 
-                            if (t_b == 0):
-                                print("start")
-                                t1 = time.time()
-                                acc.append(a_score)
-                                t_b = 1
-                            if ((time.time() - t1) > 5) and (t_b == 1):
-                                print("finish")
-                                print(1-P.Average(acc))
-                                print(ang_acc)
-                                acc.clear()
-                                t_b = 0
-                                t1 = None
-                                break
-                            if (t_b == 1):
-                                print("add")
-                                acc.append(a_score)
+                    # if (p_score >= a_score):
+                    if (1-a_score >= 0.70):
+                        cv2.putText(
+                            image, str(
+                                int((1 - a_score)*100)), (80, 30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1,
+                            [0, 0, 255], 2, cv2.LINE_AA)
 
-                        else:
+                        if (t_b == 0):
+                            print("start")
+                            t1 = time.time()
+                            acc.append(a_score)
+                            t_b = 1
+                        if ((time.time() - t1) > 5) and (t_b == 1):
+                            print("finish")
+                            print(1-P.Average(acc))
+                            print(ang_acc)
                             acc.clear()
                             t_b = 0
                             t1 = None
-                            cv2.putText(
-                                image, str(int((1 - p_score)*100)), (80, 30),
-                                cv2.FONT_HERSHEY_SIMPLEX, 1,
-                                [0, 0, 255], 2, cv2.LINE_AA)
+                            break
+                        if (t_b == 1):
+                            print("add")
+                            acc.append(a_score)
 
-                    except Exception as e:
-                        print("Error in drawing bones", e)
+                    else:
+                        acc.clear()
+                        t_b = 0
+                        t1 = None
+                        cv2.putText(
+                            image, str(int((1 - p_score)*100)), (80, 30),
+                            cv2.FONT_HERSHEY_SIMPLEX, 1,
+                            [0, 0, 255], 2, cv2.LINE_AA)
 
                     P.MP_DRAWING.draw_landmarks(image, results.pose_landmarks,
                                                 P.MP_POSE.POSE_CONNECTIONS,
@@ -170,10 +171,10 @@ def test():
                     # txt test 150-*
                     hori = np.concatenate((image, resized), axis=1)
                     # cv2.imshow('MediaPipe Feed', hori)
-                    cv2.imshow('Yoga pose estimator', hori)
+                    cv2.imshow('Yoga pose estimator', image)
                     # cv2.imshow("Camera", resized_frame)
                 if cv2.waitKey(1) & 0xFF == ord('n'):
-                    break
+                    continue
                 elif cv2.waitKey(1) & 0xFF == ord('q'):
                     exit(0)
         cap.release()
