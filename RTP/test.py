@@ -170,7 +170,7 @@ def test():
                     # txt test 150-*
                     hori = np.concatenate((image, resized), axis=1)
                     # cv2.imshow('MediaPipe Feed', hori)
-                    cv2.imshow('MediaPipe Feed', hori)
+                    cv2.imshow('Yoga pose estimator', hori)
                     # cv2.imshow("Camera", resized_frame)
                 if cv2.waitKey(1) & 0xFF == ord('n'):
                     break
