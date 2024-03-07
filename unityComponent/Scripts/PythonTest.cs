@@ -98,6 +98,7 @@ public class PythonTest : MonoBehaviour
                                     Debug.Log("传走的数值是多少: "+numbers[i]);
                                     Debug.Log("传走的index是多少: "+i);
                                     JointVisuals[i].SetFloat("particleSize",numbers[i]*0.1f);
+                                    JointVisuals[i].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
                                 }
                         }
                 numbers.Clear();
