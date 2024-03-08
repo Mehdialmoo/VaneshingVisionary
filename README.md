@@ -1,5 +1,2 @@
 # VaneshingVisionary
-Unity Part Instruction:
-    1.https://biomotionlab.github.io/SUP/docs/Installation, Follow the instruction.
-    2.Create a new URP project with the version of 2022.3.20f1 and install the package.
-    3.Check the SampleScene.
+- In this video, the size of the particles represents the magnitude of the accuracy value, with a red display indicating that the position is less than 70% accurate.(Check the unityComponent->gif)

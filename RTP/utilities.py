@@ -62,8 +62,6 @@ class Posefunc:
             try:
                 landmarks = results.pose_landmarks.landmark
 
-                # print(len(landmarks))  # check later .... txt util 63-75
-
                 left_shoulder = [
                     landmarks[
                         self.MP_POSE.PoseLandmark.LEFT_SHOULDER.value].x,
@@ -261,168 +259,6 @@ class Posefunc:
             cv2.destroyAllWindows()
         return landmarks, keypoints, angle, image
 
-    def classifyPose(self, landmarks, output_image, display=False):
-
-        # Initialize the label of the pose. It is not known at this stage.
-        label = 'Unknown Pose'
-        color = (0, 0, 255)
-        left_shoulder = landmarks[
-            self.MP_POSE.PoseLandmark.LEFT_SHOULDER.value]
-        left_elbow = landmarks[self.MP_POSE.PoseLandmark.LEFT_ELBOW.value]
-        left_wrist = landmarks[self.MP_POSE.PoseLandmark.LEFT_WRIST.value]
-        right_shoulder = landmarks[
-            self.MP_POSE.PoseLandmark.RIGHT_SHOULDER.value]
-        right_elbow = landmarks[self.MP_POSE.PoseLandmark.RIGHT_ELBOW.value]
-        right_wrist = landmarks[self.MP_POSE.PoseLandmark.RIGHT_WRIST.value]
-        left_hip = landmarks[self.MP_POSE.PoseLandmark.LEFT_HIP.value]
-        left_knee = landmarks[self.MP_POSE.PoseLandmark.LEFT_KNEE.value]
-        left_ankle = landmarks[self.MP_POSE.PoseLandmark.LEFT_ANKLE.value]
-        right_hip = landmarks[self.MP_POSE.PoseLandmark.RIGHT_HIP.value]
-        right_knee = landmarks[self.MP_POSE.PoseLandmark.RIGHT_KNEE.value]
-        right_ankle = landmarks[self.MP_POSE.PoseLandmark.RIGHT_ANKLE.value]
-
-        angle1 = self.calculateAngle(right_shoulder, right_elbow, right_wrist)
-
-        angle2 = self.calculateAngle(left_shoulder, left_elbow, left_wrist)
-
-        angle3 = self.calculateAngle(right_elbow, right_shoulder, right_hip)
-
-        angle4 = self.calculateAngle(left_elbow, left_shoulder, left_hip)
-
-        angle5 = self.calculateAngle(right_shoulder, right_hip, right_knee)
-
-        angle6 = self.calculateAngle(left_shoulder, left_hip, left_knee)
-
-        angle7 = self.calculateAngle(right_hip, right_knee, right_ankle)
-
-        angle8 = self.calculateAngle(left_hip, left_knee, left_ankle)
-
-        if angle2 > 160 and angle2 < 195 and angle1 > 160 and angle1 < 195:
-
-            if angle4 > 70 and angle4 < 110 and angle3 > 70 and angle3 < 110:
-
-                if ((angle8 > 165) and (angle8 < 195) or
-                        (angle7 > 165) and (angle7 < 195)):
-
-                    if ((angle8 > 80) and (angle8 < 120) or
-                            (angle7 > 80) and (angle7 < 120)):
-
-                        label = 'Warrior II Pose'
-
-                if ((angle8 > 160) and (angle8 < 195) and
-                        (angle7 > 160) and (angle7 < 195)):
-
-                    label = 'T Pose'
-
-        if (
-            (angle8 > 165 and angle8 < 195) or
-                (angle7 > 165 and angle7 < 195)):
-
-            if (angle7 > 25 and angle7 < 45) or (angle8 > 25 and angle8 < 45):
-
-                label = 'Tree Pose'
-
-        if label != 'Unknown Pose':
-
-            color = (0, 0, 255)
-
-        cv2.putText(output_image, label, (400, 50),
-                    cv2.FONT_HERSHEY_PLAIN, 4, color, 4)
-        cv2.rectangle(output_image, (0, 0), (100, 255), (255, 255, 255), -1)
-        # ====================================================================
-        cv2.putText(output_image, 'ID', (10, 14),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, [0, 0, 255], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(1), (10, 40),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(2), (10, 70),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(3), (10, 100),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(4), (10, 130),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(5), (10, 160),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(6), (10, 190),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(7), (10, 220),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(8), (10, 250),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        # ====================================================================
-        #                                                                    #
-        # ====================================================================
-        cv2.putText(output_image, 'Angle', (40, 12),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, [0, 0, 255], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(int(angle1)), (40, 40),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(int(angle2)), (40, 70),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(int(angle3)), (40, 100),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(int(angle4)), (40, 130),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(int(angle5)), (40, 160),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(int(angle6)), (40, 190),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(int(angle7)), (40, 220),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-        cv2.putText(output_image, str(int(angle8)), (40, 250),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
-
-        if display:
-
-            plt.figure(figsize=[10, 10])
-            plt.imshow(output_image[:, :, ::-1])
-            plt.title("Output Image")
-            plt.axis('off')
-
-        else:
-
-            return output_image, label
-
-    def detectPose(self, image, pose, display=True):
-
-        output_image = image.copy()
-        imageRGB = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-        results = pose.process(imageRGB)
-        height, width, _ = image.shape
-        landmarks = []
-        if results.pose_landmarks:
-
-            self.MP_DRAWING.draw_landmarks(
-                output_image,
-                results.pose_landmarks,
-                self.MP_POSE.POSE_CONNECTIONS,
-                self.MP_DRAWING.DrawingSpec(
-                    color=(0, 0, 255),
-                    thickness=5, circle_radius=2),
-                self.MP_DRAWING.DrawingSpec(
-                    color=(0, 255, 0),
-                    thickness=5, circle_radius=2)
-            )
-            for landmark in results.pose_landmarks.landmark:
-
-                landmarks.append((int(landmark.x * width),
-                                  int(landmark.y * height),
-                                  (landmark.z * width)))
-        if display:
-            plt.figure(figsize=[22, 22])
-            plt.subplot(121)
-            plt.imshow(image[:, :, ::-1])
-            plt.title("Original Image")
-            plt.axis('off')
-            plt.subplot(122)
-            plt.imshow(output_image[:, :, ::-1])
-            plt.title("Output Image")
-            plt.axis('off')
-
-            self.MP_DRAWING.plot_landmarks(
-                results.pose_world_landmarks, self.MP_POSE.POSE_CONNECTIONS)
-
-        else:
-            return output_image, landmarks
-
     @staticmethod
     def compare_pose(image, angle_point, angle_user, angle_target):
         angle_user = np.array(angle_user)
@@ -486,7 +322,7 @@ class Posefunc:
                 image, str("PERFECT"), (170, 30),
                 cv2.FONT_HERSHEY_SIMPLEX, 1, [0, 0, 255], 2, cv2.LINE_AA)
 
-    def Average(self, lst):
+    def Average(self, lst) -> float:
         return sum(lst) / len(lst)
 
     def dif_compare(self, x, y):
@@ -500,7 +336,7 @@ class Posefunc:
         # print(Average(average))
         return score
 
-    def diff_compare(self, x, y):
+    def diff_compare(self, x, y) -> float:
         average = []
         for i, j in zip(range(len(x)), range(len(y))):
             result = 1 - spatial.distance.cosine(x[i], y[j])
@@ -509,13 +345,24 @@ class Posefunc:
         print(self.Average(average))
         return score
 
-    def diff_compare_angle(self, x, y):
+    def diff_compare_angle(self, x, y) -> float:
         new_x = []
         for i, j in zip(range(len(x)), range(len(y))):
             z = np.abs(x[i] - y[j])/((x[i] + y[j])/2)
             new_x.append(z)
             # print(new_x[i])
         return (self.Average(new_x))
+
+    def cal_acc(self, angle_list: list, target_list: list) -> list:
+        res = []
+        try:
+            for i in range(8):
+                dis = pow(((target_list[i] - angle_list[i])/180.0), 2)
+                res.append(dis)
+        except Exception as e:
+            print(e)
+
+        return res
 
     @staticmethod
     def convert_data(landmarks):
