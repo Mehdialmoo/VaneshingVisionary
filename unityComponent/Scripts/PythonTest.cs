@@ -1,17 +1,12 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using TMPro;
 using UnityEngine.VFX;
 using Display;
-using System;
-using UnityEditor.Search;
 using FileLoaders;
 using Playback;
 using Settings;
 using SMPLModel;
-using Unity.VisualScripting;
 namespace yoga{
 public class PythonTest : MonoBehaviour
 {
@@ -86,7 +81,7 @@ public class PythonTest : MonoBehaviour
     attachParticles();
     meshAttach();   
       if (Input.GetKeyDown(KeyCode.Space)) {
-            // Stop currently playing animation
+            // Stop currently playing animation and destroy the character
             player.StopCurrentAnimations();
             //Debug.Log("destroy the first character "+jointsList.Count);
             jointsList.Clear();
@@ -99,16 +94,16 @@ public class PythonTest : MonoBehaviour
             // Play the next animation
             player.Play(animations[currentlyPlayingIndex]);
             PointLightDisplay.ParticleAction+=ParticleCorrect;
-            Debug.Log("第二次原本载入的球总共数量是："+jointsList.Count);
-            foreach(JointSphere j in jointsList)
-            {
-            Debug.Log("第二次原本载入的球名字是："+j.name);
-            }
+            // Debug.Log("第二次原本载入的球总共数量是："+jointsList.Count);
+            // foreach(JointSphere j in jointsList)
+            // {
+            // Debug.Log("第二次原本载入的球名字是："+j.name);
+            // }
             sortOrder();
-             foreach(JointSphere j in orderJointsList)
-            {
-            Debug.Log("第二次重新排序的球的名字是："+j.name);
-            }
+            //  foreach(JointSphere j in orderJointsList)
+            // {
+            // Debug.Log("第二次重新排序的球的名字是："+j.name);
+            // }
            
         
         } 
@@ -117,7 +112,6 @@ public class PythonTest : MonoBehaviour
         
         this.animations = loadedAnimations;
        // Debug.Log("animation Size:"+animations.Count);
-        // Start playing first animation when loading complete
         player.Play(animations[0]);
         sortOrder();
         // Debug.Log("First orderedjointsList 数量："+orderJointsList.Count);
@@ -147,9 +141,7 @@ public class PythonTest : MonoBehaviour
                                 {
                                     // Debug.Log("passing value: "+numbers[i]);
                                     // Debug.Log("passing index: "+i);
-                                    JointVisuals[i].SetFloat("particleSize",numbers[i]*0.1f);
-                                    JointVisuals[i].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
-                                   //attachTag(i);
+                                    attachTag(i);
                                 }
                         }
                 numbers.Clear();
@@ -157,15 +149,47 @@ public class PythonTest : MonoBehaviour
             }
         }
     }
-    // void attachTag(int i)
-    // {
-    // switch(i)
-    //     case 0:
-            
-    //         break;
-    // }
+    void attachTag(int sphereIndex)
+    {
+        switch(sphereIndex)
+        {
+        case 0:
+                JointVisuals[0].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
+                JointVisuals[0].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
+                break;
+        case 1:
+                JointVisuals[1].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
+                JointVisuals[1].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
+                break;
+        case 2:
+                JointVisuals[2].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
+                JointVisuals[2].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
+                break;
+        case 3:
+                JointVisuals[3].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
+                JointVisuals[3].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
+                break;
+        case 4:
+                JointVisuals[4].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
+                JointVisuals[4].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
+                break;
+        case 5:
+                JointVisuals[5].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
+                JointVisuals[5].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
+                break;
+        case 6:
+                JointVisuals[6].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
+                JointVisuals[6].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
+                break;
+        case 7:
+                JointVisuals[7].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
+                JointVisuals[7].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
+                break;
+        
+        }
+        
+    }
   
-    /// TODO:但是生成球的顺序不匹配
 
     void meshAttach()
     {
@@ -178,18 +202,20 @@ public class PythonTest : MonoBehaviour
     }
     void attachParticles()
     {
-        if(jointsList.Count==8)
+        if(orderJointsList.Count==8)
         {
             for(int i=0;i<JointVisuals.Count;++i)
             {
-            //JointVisuals[i].SetFloat("particleSize",numbers[i]*0.1f);
             //Debug.Log("jointsList: "+jointsList[i].gameObject.transform.position);
-            JointVisuals[i].SetVector3("jointTransform_position", jointsList[i].gameObject.transform.position);
-            JointVisuals[i].SetVector3("jointTransform_angles", jointsList[i].gameObject.transform.eulerAngles);
-            JointVisuals[i].SetVector3("jointTransform_scale", jointsList[i].gameObject.transform.localScale);
-
+            JointVisuals[i].SetVector3("jointTransform_position", orderJointsList[i].gameObject.transform.position);
+            JointVisuals[i].SetVector3("jointTransform_angles", orderJointsList[i].gameObject.transform.eulerAngles);
+            JointVisuals[i].SetVector3("jointTransform_scale", orderJointsList[i].gameObject.transform.localScale);
+           
+            Debug.Log("球"+i+"的坐标位置"+orderJointsList[i].gameObject.transform.position+"特效"+i+"位置"+JointVisuals[i].GetVector3("jointTransform_position"));
             }
+            
         }
+        
         
     }
     void HandleCharacterInstantiated(GameObject newCharacter)
@@ -221,7 +247,7 @@ public class PythonTest : MonoBehaviour
             {
                 if (jointsList[i].name == targetName)
                 {
-                    orderJointsList.Add(jointsList[i]); // 将满足条件的元素加入新列表
+                    orderJointsList.Add(jointsList[i]); 
                     
                 }
             }
