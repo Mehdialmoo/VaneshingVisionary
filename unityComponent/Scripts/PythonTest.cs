@@ -10,9 +10,6 @@ using SMPLModel;
 namespace yoga{
 public class PythonTest : MonoBehaviour
 {
-    //public String animationsFolder;
-    
-    //AnimationFileReference fileReference = new AnimationFileReference(animationsFolder, listFile);
     [SerializeField] AnimationListAsset animationListAsset;
     [SerializeField] PlaybackSettings playbackSettings = default;
     [SerializeField] Models modelTest;
@@ -69,6 +66,7 @@ public class PythonTest : MonoBehaviour
         // load animations from list asset
         ModelDefinition.OnCharacterInstantiated += HandleCharacterInstantiated;
        PointLightDisplay.ParticleAction+=ParticleCorrect;
+       
        //there's not any jointSphere
     }
     void Start()
@@ -77,52 +75,45 @@ public class PythonTest : MonoBehaviour
     }
     void Update()
     { 
-    //SearchValue();
     attachParticles();
+    SearchValue();
     meshAttach();   
-      if (Input.GetKeyDown(KeyCode.Space)) {
-            // Stop currently playing animation and destroy the character
+      if (Input.GetKeyDown(KeyCode.Space)) {  
             player.StopCurrentAnimations();
-            //Debug.Log("destroy the first character "+jointsList.Count);
             jointsList.Clear();
             orderJointsList.Clear();
-            //Debug.Log("clean the list after destroying "+jointsList.Count);
-            // Increment our animation index
             currentlyPlayingIndex++;
             // If reached end, restart all.
             if (currentlyPlayingIndex >= animations.Count) currentlyPlayingIndex = 0;
+             //Debug.Log("player.Play之前的传入球列表有几个:"+jointsList.Count);//0
             // Play the next animation
             player.Play(animations[currentlyPlayingIndex]);
-            PointLightDisplay.ParticleAction+=ParticleCorrect;
-            // Debug.Log("第二次原本载入的球总共数量是："+jointsList.Count);
-            // foreach(JointSphere j in jointsList)
+            // foreach(JointSphere js in jointsList)
             // {
-            // Debug.Log("第二次原本载入的球名字是："+j.name);
+            // Debug.Log("下一个动作的时候每个排序结束之后的球的位置："+js.name);
             // }
+            
+           // PointLightDisplay.ParticleAction+=ParticleCorrect;
             sortOrder();
-            //  foreach(JointSphere j in orderJointsList)
-            // {
-            // Debug.Log("第二次重新排序的球的名字是："+j.name);
-            // }
-           
-        
+            // //Debug.Log("下一个动作排好序之后球的数量: "+orderJointsList.Count);
+             attachParticles();
+             Debug.Log("player.Play之后的传入球列表有几个:"+jointsList.Count);//16
+            
         } 
+     
     }
     void DoneLoading(List<List<AMASSAnimation>> loadedAnimations) {
         
         this.animations = loadedAnimations;
-       // Debug.Log("animation Size:"+animations.Count);
         player.Play(animations[0]);
         sortOrder();
-        // Debug.Log("First orderedjointsList 数量："+orderJointsList.Count);
-        // foreach(JointSphere j in orderJointsList)
-        // {
-        // Debug.Log("初始化重新排序的球的名字是："+j.name);
-        // }
+        
+        Debug.Log("DoneLoading之后传球列表有"+jointsList.Count+"个");
     }
     
     void SearchValue()
     {
+    
     Regex regex = new Regex(@"[-+]?\b\d+(\.\d+)?([eE][-+]?\d+)?\b");
         MatchCollection matches = regex.Matches(tempStr);
         
@@ -135,62 +126,18 @@ public class PythonTest : MonoBehaviour
                 //print the 8 numbers.
                 if (numbers.Count == 8)
                 {
+                //attachParticles();
                     for (int i = 0; i < numbers.Count; i++)
                         {
-                            if(numbers[i]<=0.7)
-                                {
-                                    // Debug.Log("passing value: "+numbers[i]);
-                                    // Debug.Log("passing index: "+i);
-                                    attachTag(i);
-                                }
+                        //yellow->green //The closer to green means the smaller the accuracy value coming through.
+                        JointVisuals[i].SetVector3("colorControl",new Vector3(1.0f*numbers[i],1.0f,0.0f));      
                         }
                 numbers.Clear();
                 }
             }
         }
     }
-    void attachTag(int sphereIndex)
-    {
-        switch(sphereIndex)
-        {
-        case 0:
-                JointVisuals[0].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
-                JointVisuals[0].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
-                break;
-        case 1:
-                JointVisuals[1].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
-                JointVisuals[1].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
-                break;
-        case 2:
-                JointVisuals[2].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
-                JointVisuals[2].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
-                break;
-        case 3:
-                JointVisuals[3].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
-                JointVisuals[3].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
-                break;
-        case 4:
-                JointVisuals[4].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
-                JointVisuals[4].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
-                break;
-        case 5:
-                JointVisuals[5].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
-                JointVisuals[5].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
-                break;
-        case 6:
-                JointVisuals[6].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
-                JointVisuals[6].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
-                break;
-        case 7:
-                JointVisuals[7].SetFloat("particleSize",numbers[sphereIndex]*0.1f);
-                JointVisuals[7].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
-                break;
-        
-        }
-        
-    }
-  
-
+    
     void meshAttach()
     {
     if(nCharacter != null)
@@ -210,13 +157,9 @@ public class PythonTest : MonoBehaviour
             JointVisuals[i].SetVector3("jointTransform_position", orderJointsList[i].gameObject.transform.position);
             JointVisuals[i].SetVector3("jointTransform_angles", orderJointsList[i].gameObject.transform.eulerAngles);
             JointVisuals[i].SetVector3("jointTransform_scale", orderJointsList[i].gameObject.transform.localScale);
-           
-            Debug.Log("球"+i+"的坐标位置"+orderJointsList[i].gameObject.transform.position+"特效"+i+"位置"+JointVisuals[i].GetVector3("jointTransform_position"));
+            //Debug.Log("球"+i+"的坐标位置"+orderJointsList[i].gameObject.transform.position+"特效"+i+"位置"+JointVisuals[i].GetVector3("jointTransform_position"));
             }
-            
         }
-        
-        
     }
     void HandleCharacterInstantiated(GameObject newCharacter)
     {
@@ -232,13 +175,11 @@ public class PythonTest : MonoBehaviour
      if(jSphere.isMark==true)
         {
             jointsList.Add(jSphere);
-            
         }
 
     }
     void sortOrder()
     {
-    Debug.Log("排序启动");
     if(jointsList.Count==8)
     {
      foreach (string targetName in targetNames)
@@ -252,9 +193,11 @@ public class PythonTest : MonoBehaviour
                 }
             }
         }
+      jointsList.Clear(); 
+      attachParticles();
     }
     
     }        
-}
+    }
 }
 
