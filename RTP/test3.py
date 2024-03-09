@@ -9,8 +9,8 @@ import time
 import queue
 import json
 
-# path = r"./RTP/video/yoga_data/"
-path = r"D:\git ex\VaneshingVisionary\RTP\video\yoga_data"
+path = r"./RTP/video/yoga_data/"
+#path = r"D:\git ex\VaneshingVisionary\RTP\video\yoga_data"
 
 JOINT_DIC = {
     'RIGHT_ELBOW': 14,
@@ -49,7 +49,8 @@ CAL_LIST = [
 ]
 
 
-def test(P, joints_acc: queue.Queue):
+def test( joints_acc: queue.Queue):
+    print("test start")
     for i in range(16):
         P = Posefunc()
         cap = cv2.VideoCapture(0)
@@ -181,53 +182,54 @@ def test(P, joints_acc: queue.Queue):
         cap.release()
         cv2.destroyAllWindows()
 
-    def serverdata(message, joints_acc: queue.Queue):
-        print(message)
-        i = 0
-        # Create UDP socket to use for sending (and receiving)
-        sock = U.UdpComms(
-            udpIP="127.0.0.1", portTX=8000,
-            portRX=8001, enableRX=True,
-            suppressWarnings=True)
-        running = True
-        nodata = 0
-        while running:
-            # sock.SendData('Sent from Python: ' + str(i))
-            # Send this string to other application
-            i += 1
+def serverdata(message, joints_acc: queue.Queue):
+    print("server start")
+    print(message)
+    i = 0
+    # Create UDP socket to use for sending (and receiving)
+    sock = U.UdpComms(
+        udpIP="127.0.0.1", portTX=8000,
+        portRX=8001, enableRX=True,
+        suppressWarnings=True)
+    running = True
+    nodata = 0
+    while running:
+        # sock.SendData('Sent from Python: ' + str(i))
+        # Send this string to other application
+        i += 1
 
-            data = sock.ReadReceivedData()  # read data
+        data = sock.ReadReceivedData()  # read data
 
-            if data != None:
-                # if NEW data has been received since last ReadReceivedData function call
-                print(data)  # print new received data
-                nodata = 0
+        if data != None:
+            # if NEW data has been received since last ReadReceivedData function call
+            print(data)  # print new received data
+            nodata = 0
 
-            if joints_acc.qsize() == 0:
-                nodata = nodata + 1
-                if (nodata >= 50000000):
-                    print("Long time no data, quit")
-                    running = False
-                    break
-            else:
-                nodata = 0
-                joints_acc_data = joints_acc.get()
-                joints_acc_data = json.dumps({"score": joints_acc_data})
-                sock.SendData(joints_acc_data)
+        if joints_acc.qsize() == 0:
+            nodata = nodata + 1
+            if (nodata >= 50000000):
+                print("Long time no data, quit")
+                running = False
+                break
+        else:
+            nodata = 0
+            joints_acc_data = joints_acc.get()
+            joints_acc_data = json.dumps({"score": joints_acc_data})
+            sock.SendData(joints_acc_data)
 
-            # time.sleep(1)
+        # time.sleep(1)
 
-        sock.CloseSocket()
+    sock.CloseSocket()
 
-    if __name__ == "__main__":
-        P = Posefunc()
-        cap = cv2.VideoCapture(0)
+if __name__ == "__main__":
+    print("run main")
+    cap = cv2.VideoCapture(0)
 
-        joints_acc = queue.Queue()
+    joints_acc = queue.Queue()
 
-        tr1 = threading.Thread(target=test, args=(P, joints_acc,))
-        tr2 = threading.Thread(target=serverdata, args=(
-            'enter Thread2', joints_acc,))
+    tr1 = threading.Thread(target=test, args=(joints_acc,))
+    tr2 = threading.Thread(target=serverdata, args=(
+        'enter Thread2', joints_acc,))
 
-        tr1.start()
-        tr2.start()
+    tr1.start()
+    tr2.start()

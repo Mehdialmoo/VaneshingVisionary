@@ -358,7 +358,7 @@ class Posefunc:
         try:
             for i in range(8):
                 dis = pow(((target_list[i] - angle_list[i])/180.0), 2)
-                res.append(dis)
+                res.append(1.0-dis)
         except Exception as e:
             print(e)
 
