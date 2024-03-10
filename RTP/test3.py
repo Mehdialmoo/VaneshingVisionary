@@ -9,8 +9,9 @@ import time
 import queue
 import json
 
-path = r"./RTP/video/yoga_data/"
+PATH = r"./RTP/video/yoga_data/"
 #path = r"D:\git ex\VaneshingVisionary\RTP\video\yoga_data"
+POSENUM = 6
 
 JOINT_DIC = {
     'RIGHT_ELBOW': 14,
@@ -53,23 +54,30 @@ def test(joints_acc: queue.Queue):
     print("test start")
     cap = cv2.VideoCapture(0)
     quitthread = False
-    for i in range(16):
-        if quitthread:
-            break
+    current_pose = 0
+    change_pose = False
 
-        P = Posefunc()
-        cap = cv2.VideoCapture(0)
+    while (not quitthread) and (current_pose < POSENUM):
         t_b = 0
         t1 = None
         acc = []
-        change_pose = False
 
-        resized, angle_target, point_target = P.load(path, i)
+        if change_pose:
+            current_pose += 1
+            print(change_pose)
+            change_pose = False
+            if current_pose >= POSENUM:
+                break
 
+        P = Posefunc()
+        resized, angle_target, point_target = P.load(PATH, current_pose)
+
+        pose = P.MP_POSE.Pose(min_detection_confidence=0.5,
+                            min_tracking_confidence=0.5)
         with P.MP_POSE.Pose(min_detection_confidence=0.5,
                             min_tracking_confidence=0.5) as pose:
 
-            while not change_pose:
+            while (not change_pose) and (not quitthread):
 
                 ok, frame = cap.read()
                 if not ok:
@@ -96,77 +104,82 @@ def test(joints_acc: queue.Queue):
                 try:
                     landmarks = results.pose_landmarks.landmark
                     # print(results.pose_landmarks)
+                except Exception as e:
+                    print("landmarks err:", e)
+                    continue
 
-                    angle_point = []  # 所有计算角度需要用到的点的坐标
-                    landmark_dic = {}  # 所有会返回准确率的joint的的坐标
-                    for k in JOINT_DIC:
-                        v = JOINT_DIC[k]
-                        pos = [landmarks[v].x, landmarks[v].y]
-                        landmark_dic[k] = pos
-                        if k in ANGLE_LIST:
-                            angle_point.append(pos)
+                angle_point = []  # 所有计算角度需要用到的点的坐标
+                landmark_dic = {}  # 所有会返回准确率的joint的的坐标
+                for k in JOINT_DIC:
+                    v = JOINT_DIC[k]
+                    pos = [landmarks[v].x, landmarks[v].y]
+                    landmark_dic[k] = pos
+                    if k in ANGLE_LIST:
+                        angle_point.append(pos)
 
-                    keypoints = []  # 从landmarks提取出的3d坐标
-                    for point in landmarks:
-                        keypoints.append({
-                            'X': point.x,
-                            'Y': point.y,
-                            'Z': point.z,
-                        })
+                keypoints = []  # 从landmarks提取出的3d坐标
+                for point in landmarks:
+                    keypoints.append({
+                        'X': point.x,
+                        'Y': point.y,
+                        'Z': point.z,
+                    })
 
-                    p_score = P.dif_compare(keypoints, point_target)
+                p_score = P.dif_compare(keypoints, point_target)
 
-                    angle = []
+                angle = []
 
-                    for i in range(8):
-                        ang = P.calculateAngle(
-                            landmark_dic[CAL_LIST[i][0]],
-                            landmark_dic[CAL_LIST[i][1]],
-                            landmark_dic[CAL_LIST[i][2]])
-                        angle.append(ang)
-                    ang_acc = P.cal_acc(angle, angle_target)
-                    print("========")
-                    print(ang_acc)
-                    joints_acc.put(ang_acc)
+                for i in range(8):
+                    ang = P.calculateAngle(
+                        landmark_dic[CAL_LIST[i][0]],
+                        landmark_dic[CAL_LIST[i][1]],
+                        landmark_dic[CAL_LIST[i][2]])
+                    angle.append(ang)
+                ang_acc = P.cal_acc(angle, angle_target)
+                joints_acc.put(ang_acc)
 
-                    P.compare_pose(image, angle_point, angle, angle_target)
-                    a_score = P.diff_compare_angle(angle, angle_target)
+                P.compare_pose(image, angle_point, angle, angle_target,show_text=False)
+                a_score = P.diff_compare_angle(angle, angle_target)
+                
+                #################### Fancy print logs #####################
+                # print("========")
+                # print(f"ang_acc: {ang_acc}") 
+                # print(f"a_score: {1-a_score}")
 
-                    # if (p_score >= a_score):
-                    if (1-a_score >= 0.70):
-                        cv2.putText(
-                            image, str(int((1 - a_score)*100)), (80, 30),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1,
-                            [0, 0, 255], 2, cv2.LINE_AA)
+                # if (p_score >= a_score):
+                if (1-a_score >= 0.70):
+                    cv2.putText(
+                        image, str(int((1 - a_score)*100)), (80, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1,
+                        [0, 0, 255], 2, cv2.LINE_AA)
 
-                        if (t_b == 0):
-                            print("start")
-                            t1 = time.time()
-                            acc.append(a_score)
-                            t_b = 1
-                        if ((time.time() - t1) > 5) and (t_b == 1):
-                            print("finish")
-                            print(1-P.Average(acc))
-                            print(ang_acc)
-                            acc.clear()
-                            t_b = 0
-                            t1 = None
-                            break
-                        if (t_b == 1):
-                            print("add")
-                            acc.append(a_score)
-
-                    else:
+                    if (t_b == 0):
+                        print("start")
+                        t1 = time.time()
+                        acc.append(a_score)
+                        t_b = 1
+                    if ((time.time() - t1) > 5) and (t_b == 1):
+                        print("finish")
+                        print(1-P.Average(acc))
+                        print(ang_acc)
                         acc.clear()
                         t_b = 0
                         t1 = None
-                        cv2.putText(
-                            image, str(int((1 - p_score)*100)), (80, 30),
-                            cv2.FONT_HERSHEY_SIMPLEX, 1,
-                            [0, 0, 255], 2, cv2.LINE_AA)
+                        change_pose = True
+                    if (t_b == 1):
+                        print("add")
+                        acc.append(a_score)
 
-                except Exception as e:
-                    print("Error in drawing bones", e)
+                else:
+                    acc.clear()
+                    t_b = 0
+                    t1 = None
+                    print("clear")
+                    cv2.putText(
+                        image, str(int((1 - p_score)*100)), (80, 30),
+                        cv2.FONT_HERSHEY_SIMPLEX, 1,
+                        [0, 0, 255], 2, cv2.LINE_AA)
+
 
                 P.MP_DRAWING.draw_landmarks(image, results.pose_landmarks,
                                             P.MP_POSE.POSE_CONNECTIONS,
@@ -181,13 +194,25 @@ def test(joints_acc: queue.Queue):
                 # txt test 150-*
                 hori = np.concatenate((image, resized), axis=1)
                 # cv2.imshow('MediaPipe Feed', hori)
-                cv2.imshow('MediaPipe Feed', image)
+                cv2.imshow('MediaPipe Feed', hori)
                 # cv2.imshow("Camera", resized_frame)
-            
-                if cv2.waitKey(10) & 0xFF == ord('q'):
+
+                if (not change_pose) and (not quitthread):
+                    key = cv2.waitKey(1)
+                    if key & 0xFF == ord('n'):
+                        print("input: n")
+                        change_pose = True
+                        break
+                    elif key & 0xFF == ord('q'):
+                        print('input: q')
+                        quitthread = True
+                        break
+                else:
                     break
-        cap.release()
-        cv2.destroyAllWindows()
+            if(quitthread):
+                break
+    cap.release()
+    cv2.destroyAllWindows()
     exit(0)
 
 
