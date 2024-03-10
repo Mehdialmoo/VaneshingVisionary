@@ -1,5 +1,5 @@
 import cv2
-import numpy as np
+# import numpy as np
 import time
 
 from utilities import Posefunc
@@ -50,6 +50,7 @@ def test():
         t_b = 0
         t1 = None
         acc = []
+        image = []
 
         resized, angle_target, point_target = P.load(path, i)
 
@@ -169,16 +170,17 @@ def test():
                                                 )
 
                     # txt test 150-*
-                    hori = np.concatenate((image, resized), axis=1)
-                    # cv2.imshow('MediaPipe Feed', hori)
-                    cv2.imshow('Yoga pose estimator', image)
-                    # cv2.imshow("Camera", resized_frame)
+                    # hori = np.concatenate((image, resized), axis=1)
+                    cv2.imshow('MediaPipe Feed', image)
+                    # cv2.imshow('Yoga pose estimator', hori)
+                    cv2.imshow("pose", resized)
                 if cv2.waitKey(1) & 0xFF == ord('n'):
-                    continue
+                    break
                 elif cv2.waitKey(1) & 0xFF == ord('q'):
                     exit(0)
-        cap.release()
         cv2.destroyAllWindows()
+        # cv2. destroyWindow("pose")
+        cap.release()
 
 
 if __name__ == "__main__":
