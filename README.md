@@ -1,5 +1,5 @@
 # YOGA COACH
-![ ](.\RTP\video\banner.jpeg)
+![ ](./RTP/video/banner.jpeg)
 ## Introduction
 The program is a yoga assistant that uses computer vision to monitor the user's poses and provide feedback. The program is written in Python, using libraries such as OpenCV, mediapipe to process the user's webcam input and apply pose estimation and recognition algorithms. The program also uses Unity, a cross-platform game engine, to create a realistic and interactive 3D environment where the user can see a virtual trainer and a user interface. The trainer demonstrates the correct poses and guides the user through a yoga session, while the user interface feedbacks on the user's progress. The program aims to help the user improve their yoga skills and enjoy a personalized and immersive experience.
 
