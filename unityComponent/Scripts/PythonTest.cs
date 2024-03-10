@@ -1,12 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
-using TMPro;
 using UnityEngine.VFX;
 using Display;
-using System;
-using UnityEditor.Search;
 using FileLoaders;
 using Playback;
 using Settings;
@@ -16,6 +12,7 @@ public class PythonTest : MonoBehaviour
 {
     [SerializeField] AnimationListAsset animationListAsset;
     [SerializeField] PlaybackSettings playbackSettings = default;
+    [SerializeField] Models modelTest;
     [SerializeField] BodySettings bodySettings;
     [SerializeField] DisplaySettings displaySettings;
     [SerializeField] VisualEffect meshVisual;
@@ -23,18 +20,26 @@ public class PythonTest : MonoBehaviour
     List<List<AMASSAnimation>> animations;
     SUPPlayer player;
     GameObject nCharacter;
-    int times = 0;
     Transform Pelvis;
     int currentlyPlayingIndex = 0;
     List<JointSphere> jointsList = new List<JointSphere>();
+    List<JointSphere> orderJointsList = new List<JointSphere>();
     public List<VisualEffect> JointVisuals=new List<VisualEffect>();
-
     List<float> numbers = new List<float>();
     //public static event Action <float,int> GetFailedScore;
     string tempStr = "Sent from Python xxxx";
     int numToSendToPython = 0;
     UdpSocket udpSocket;
-
+    string[] targetNames = {
+     "JointSphere for R_Elbow", 
+     "JointSphere for L_Elbow", 
+     "JointSphere for R_Shoulder",
+     "JointSphere for L_Shoulder",
+     "JointSphere for R_Hip",
+     "JointSphere for L_Hip",
+     "JointSphere for R_Knee",
+     "JointSphere for L_Knee"
+      };
     public void QuitApp()
     {
         print("Quitting");
@@ -54,30 +59,61 @@ public class PythonTest : MonoBehaviour
     }
     void OnEnable()
     {
+       // AnimationFileReference fileReference = new AnimationFileReference(animationsFolder);
+        SUPLoader.LoadFromListAssetAsync(animationListAsset, DoneLoading);
+        //SUPLoader.LoadAsync(fileReference, modelTest, playbackSettings, DoneLoading);
         player = new SUPPlayer(playbackSettings, displaySettings, bodySettings);
         // load animations from list asset
-        SUPLoader.LoadFromListAssetAsync(animationListAsset, DoneLoading);
         ModelDefinition.OnCharacterInstantiated += HandleCharacterInstantiated;
-        PointLightDisplay.ParticleAction+=ParticleCorrect;
+       PointLightDisplay.ParticleAction+=ParticleCorrect;
        
-    }
-
-    void DoneLoading(List<List<AMASSAnimation>> loadedAnimations) {
-        
-        // save loaded animations to memory
-        this.animations = loadedAnimations;
-        Debug.Log("animation Size:"+animations.Count);
-        // Start playing first animation when loading complete
-        player.Play(animations[0]);
-        
+       //there's not any jointSphere
     }
     void Start()
     {
         udpSocket = FindObjectOfType<UdpSocket>();
-        
     }
+    void Update()
+    { 
+    attachParticles();
+    SearchValue();
+    meshAttach();   
+      if (Input.GetKeyDown(KeyCode.Space)) {  
+            player.StopCurrentAnimations();
+            jointsList.Clear();
+            orderJointsList.Clear();
+            currentlyPlayingIndex++;
+            // If reached end, restart all.
+            if (currentlyPlayingIndex >= animations.Count) currentlyPlayingIndex = 0;
+             //Debug.Log("player.Play之前的传入球列表有几个:"+jointsList.Count);//0
+            // Play the next animation
+            player.Play(animations[currentlyPlayingIndex]);
+            // foreach(JointSphere js in jointsList)
+            // {
+            // Debug.Log("下一个动作的时候每个排序结束之后的球的位置："+js.name);
+            // }
+            
+           // PointLightDisplay.ParticleAction+=ParticleCorrect;
+            sortOrder();
+            // //Debug.Log("下一个动作排好序之后球的数量: "+orderJointsList.Count);
+             attachParticles();
+             Debug.Log("player.Play之后的传入球列表有几个:"+jointsList.Count);//16
+            
+        } 
+     
+    }
+    void DoneLoading(List<List<AMASSAnimation>> loadedAnimations) {
+        
+        this.animations = loadedAnimations;
+        player.Play(animations[0]);
+        sortOrder();
+        
+        Debug.Log("DoneLoading之后传球列表有"+jointsList.Count+"个");
+    }
+    
     void SearchValue()
     {
+    
     Regex regex = new Regex(@"[-+]?\b\d+(\.\d+)?([eE][-+]?\d+)?\b");
         MatchCollection matches = regex.Matches(tempStr);
         
@@ -90,43 +126,18 @@ public class PythonTest : MonoBehaviour
                 //print the 8 numbers.
                 if (numbers.Count == 8)
                 {
+                //attachParticles();
                     for (int i = 0; i < numbers.Count; i++)
                         {
-                            if(numbers[i]<=0.7)
-                                {
-                                    //TODO:GetFailedScore?.Invoke(numbers[i],i);
-                                    Debug.Log("传走的数值是多少: "+numbers[i]);
-                                    Debug.Log("传走的index是多少: "+i);
-                                    JointVisuals[i].SetFloat("particleSize",numbers[i]*0.1f);
-                                    JointVisuals[i].SetVector3("colorControl",new Vector3(1.0f,0.0f,0.0f));
-                                }
+                        //yellow->green //The closer to green means the smaller the accuracy value coming through.
+                        JointVisuals[i].SetVector3("colorControl",new Vector3(1.0f*numbers[i],1.0f,0.0f));      
                         }
                 numbers.Clear();
                 }
             }
         }
     }
-    void Update()
-    { 
-    SearchValue();
-    attachParticles();
-    meshAttach();   
-      if (Input.GetKeyDown(KeyCode.Space)) {
-            times++;
-            
-            // Stop currently playing animation
-            player.StopCurrentAnimations();
-            
-            // Increment our animation index
-            currentlyPlayingIndex++;
-            
-            // If reached end, restart all.
-            if (currentlyPlayingIndex >= animations.Count) currentlyPlayingIndex = 0;
-           
-            // Play the next animation
-            player.Play(animations[currentlyPlayingIndex]);
-        } 
-    }
+    
     void meshAttach()
     {
     if(nCharacter != null)
@@ -138,18 +149,17 @@ public class PythonTest : MonoBehaviour
     }
     void attachParticles()
     {
-        if(jointsList.Count==8)
+        if(orderJointsList.Count==8)
         {
             for(int i=0;i<JointVisuals.Count;++i)
             {
             //Debug.Log("jointsList: "+jointsList[i].gameObject.transform.position);
-            JointVisuals[i].SetVector3("jointTransform_position", jointsList[i].gameObject.transform.position);
-            JointVisuals[i].SetVector3("jointTransform_angles", jointsList[i].gameObject.transform.eulerAngles);
-            JointVisuals[i].SetVector3("jointTransform_scale", jointsList[i].gameObject.transform.localScale);
-
+            JointVisuals[i].SetVector3("jointTransform_position", orderJointsList[i].gameObject.transform.position);
+            JointVisuals[i].SetVector3("jointTransform_angles", orderJointsList[i].gameObject.transform.eulerAngles);
+            JointVisuals[i].SetVector3("jointTransform_scale", orderJointsList[i].gameObject.transform.localScale);
+            //Debug.Log("球"+i+"的坐标位置"+orderJointsList[i].gameObject.transform.position+"特效"+i+"位置"+JointVisuals[i].GetVector3("jointTransform_position"));
             }
         }
-        
     }
     void HandleCharacterInstantiated(GameObject newCharacter)
     {
@@ -162,14 +172,32 @@ public class PythonTest : MonoBehaviour
     }
     void ParticleCorrect(JointSphere jSphere)
     {
-        if(jSphere.isMark==true)
+     if(jSphere.isMark==true)
         {
             jointsList.Add(jSphere);
-            
         }
-        
+
     }
-           
-}
+    void sortOrder()
+    {
+    if(jointsList.Count==8)
+    {
+     foreach (string targetName in targetNames)
+        {
+            for (int i = 0; i < jointsList.Count; i++)
+            {
+                if (jointsList[i].name == targetName)
+                {
+                    orderJointsList.Add(jointsList[i]); 
+                    
+                }
+            }
+        }
+      jointsList.Clear(); 
+      attachParticles();
+    }
+    
+    }        
+    }
 }
 
