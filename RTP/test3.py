@@ -56,6 +56,7 @@ def test(joints_acc: queue.Queue):
     quitthread = False
     current_pose = 0
     change_pose = False
+    P = Posefunc()
 
     while (not quitthread) and (current_pose < POSENUM):
         t_b = 0
@@ -64,16 +65,13 @@ def test(joints_acc: queue.Queue):
 
         if change_pose:
             current_pose += 1
-            print(change_pose)
+            print("change_pose")
             change_pose = False
             if current_pose >= POSENUM:
                 break
 
-        P = Posefunc()
         resized, angle_target, point_target = P.load(PATH, current_pose)
 
-        pose = P.MP_POSE.Pose(min_detection_confidence=0.5,
-                            min_tracking_confidence=0.5)
         with P.MP_POSE.Pose(min_detection_confidence=0.5,
                             min_tracking_confidence=0.5) as pose:
 
@@ -140,13 +138,7 @@ def test(joints_acc: queue.Queue):
 
                 P.compare_pose(image, angle_point, angle, angle_target,show_text=False)
                 a_score = P.diff_compare_angle(angle, angle_target)
-                
-                #################### Fancy print logs #####################
-                # print("========")
-                # print(f"ang_acc: {ang_acc}") 
-                # print(f"a_score: {1-a_score}")
 
-                # if (p_score >= a_score):
                 if (1-a_score >= 0.70):
                     cv2.putText(
                         image, str(int((1 - a_score)*100)), (80, 30),
@@ -201,6 +193,7 @@ def test(joints_acc: queue.Queue):
                     key = cv2.waitKey(1)
                     if key & 0xFF == ord('n'):
                         print("input: n")
+                        cv2.destroyAllWindows()
                         change_pose = True
                         break
                     elif key & 0xFF == ord('q'):
@@ -208,11 +201,12 @@ def test(joints_acc: queue.Queue):
                         quitthread = True
                         break
                 else:
+                    cv2.destroyAllWindows()
                     break
             if(quitthread):
+                cv2.destroyAllWindows()
                 break
     cap.release()
-    cv2.destroyAllWindows()
     exit(0)
 
 
