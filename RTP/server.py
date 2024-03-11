@@ -241,7 +241,7 @@ def serverdata(message, joints_acc: queue.Queue):
             # if NEW data has been received since last ReadReceivedData function call
             print(data)  # print new received data
             nodata = 0
-            if data.capitalize() == 'TRUE':
+            if data == "true":
                 print("Recieved TRUE from Unity")
                 if change_pose:
                     change_pose = False
