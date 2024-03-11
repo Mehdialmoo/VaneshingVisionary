@@ -1,0 +1,17 @@
+name: YOG_ENV
+channels:
+  - defaults
+dependencies:
+  - python=3.8
+  - opencv-python-headless==4.5.4
+  - mediapipe==0.8.8
+  - numpy
+  - pandas
+  - matplotlib
+  - scipy
+  - python-dotenv
+  - queue
+  - threading
+  - socket
+  - json
+  

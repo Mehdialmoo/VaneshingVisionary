@@ -1,5 +1,5 @@
 # YOGA COACH
-![ ](./RTP/video/banner.jpeg)
+![ ](./RTP/Data/banner.jpeg)
 ## Introduction
 The program is a yoga assistant that uses computer vision to monitor the user's poses and provide feedback. The program is written in Python, using libraries such as OpenCV, mediapipe to process the user's webcam input and apply pose estimation and recognition algorithms. The program also uses Unity, a cross-platform game engine, to create a realistic and interactive 3D environment where the user can see a virtual trainer and a user interface. The trainer demonstrates the correct poses and guides the user through a yoga session, while the user interface feedbacks on the user's progress. The program aims to help the user improve their yoga skills and enjoy a personalized and immersive experience.
 
@@ -23,12 +23,18 @@ git clone git@github.com:Mehdialmoo/VaneshingVisionary.git
 2. open the folder in terminal and install the environment using the command below:
 ```bash
 cd VaneshingVisionary
-conda create ENVIRONMENT.yml
+conda create YOG_ENV.yml
 conda activate YOG_ENV
 ```
-3. Download the latest version of Unity and follow the following steps:
+3. Download the latest version of Unity, and installthe unity after that the follow these steps:
+    * Launch the Unity Hub.
+    * Click Projects > Open.
+    * Locate to the project's location on your machine using the file explorer and click Open.
+
+    The project immediately opens in the Editor and is added to the Hub.
+
 ## Run
-- to run the unity program:
+- to run the program firstly unity program:
   + run the test3.py
   + open the unity project, go to the particle Scene and run it.
 ## Demo
