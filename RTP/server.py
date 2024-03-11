@@ -230,17 +230,21 @@ def serverdata(message, joints_acc: queue.Queue):
         suppressWarnings=True)
     running = True
     nodata = 0
+    change_pose = False
     while running:
         # sock.SendData('Sent from Python: ' + str(i))
         # Send this string to other application
         i += 1
-
         data = sock.ReadReceivedData()  # read data
 
         if data != None:
             # if NEW data has been received since last ReadReceivedData function call
             print(data)  # print new received data
             nodata = 0
+            if data == "true":
+                print("Recieved TRUE from Unity")
+                if change_pose:
+                    change_pose = False
 
         if joints_acc.qsize() == 0:
             nodata = nodata + 1
@@ -253,7 +257,9 @@ def serverdata(message, joints_acc: queue.Queue):
             joints_acc_data = joints_acc.get()
             score = joints_acc_data[0]
             nextimage = joints_acc_data[1]
-            json_data = json.dumps({"score":score, "next":nextimage})
+            if nextimage:
+                change_pose = True
+            json_data = json.dumps({"score":score, "next":change_pose})
             sock.SendData(json_data)
             print(f"Send data:{json_data} \n...ok!")
 
