@@ -1,5 +1,4 @@
 import cv2
-import os
 from utilities import Posefunc
 import numpy as np
 import threading
@@ -10,7 +9,7 @@ import queue
 import json
 
 PATH = r"./RTP/video/yoga_data/"
-#path = r"D:\git ex\VaneshingVisionary\RTP\video\yoga_data"
+# path = r"D:\git ex\VaneshingVisionary\RTP\video\yoga_data"
 POSENUM = 6
 
 JOINT_DIC = {
@@ -136,7 +135,9 @@ def test(joints_acc: queue.Queue):
                 ang_acc = P.cal_acc(angle, angle_target)
                 joints_acc.put(ang_acc)
 
-                P.compare_pose(image, angle_point, angle, angle_target,show_text=False)
+                P.compare_pose(
+                    image, angle_point, angle,
+                    angle_target, show_text=False)
                 a_score = P.diff_compare_angle(angle, angle_target)
 
                 if (1-a_score >= 0.70):
@@ -172,7 +173,6 @@ def test(joints_acc: queue.Queue):
                         cv2.FONT_HERSHEY_SIMPLEX, 1,
                         [0, 0, 255], 2, cv2.LINE_AA)
 
-
                 P.MP_DRAWING.draw_landmarks(image, results.pose_landmarks,
                                             P.MP_POSE.POSE_CONNECTIONS,
                                             P.MP_DRAWING.DrawingSpec(
@@ -203,7 +203,7 @@ def test(joints_acc: queue.Queue):
                 else:
                     cv2.destroyAllWindows()
                     break
-            if(quitthread):
+            if (quitthread):
                 cv2.destroyAllWindows()
                 break
     cap.release()
@@ -249,14 +249,50 @@ def serverdata(message, joints_acc: queue.Queue):
 
     sock.CloseSocket()
 
+
+def serverdata2(message, joints_acc: queue.Queue):
+    i = 0
+    host, port = "127.0.0.1", 25001
+    data = joints_acc
+
+    # SOCK_STREAM means TCP socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    sock.connect((host, port))
+    running = True
+    nodata = 0
+    while running:
+        i += 1
+        if data != None:
+            # if NEW data has been received since last ReadReceivedData function call
+            print(data)  # print new received data
+            nodata = 0
+        # Connect to the server and send the data
+
+        if joints_acc.qsize() == 0:
+            nodata = nodata + 1
+            if (nodata >= 50000000):
+                print("Long time no data, quit")
+                running = False
+                break
+        else:
+            nodata = 0
+            # joints_acc_data = joints_acc.get()
+            # joints_acc_data = json.dumps({"score": joints_acc_data})
+            # sock.SendData(joints_acc_data)
+            sock.sendall(data.encode("utf-8"))
+            response = sock.recv(1024).decode("utf-8")
+            print(response)
+
+    sock.close()
+
+
 if __name__ == "__main__":
     print("run main")
-
 
     joints_acc = queue.Queue()
 
     tr1 = threading.Thread(target=test, args=(joints_acc,))
-    tr2 = threading.Thread(target=serverdata, args=(
+    tr2 = threading.Thread(target=serverdata2, args=(
         'enter Thread2', joints_acc,))
 
     tr1.start()
