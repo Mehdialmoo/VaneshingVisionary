@@ -1,9 +1,7 @@
 import cv2
-import os
 from utilities import Posefunc
 import numpy as np
 import threading
-import socket
 import UdpComms as U
 import time
 import queue
@@ -244,7 +242,8 @@ def serverdata(message, joints_acc: queue.Queue):
         data = sock.ReadReceivedData()  # read data
 
         if data != None:
-            # if NEW data has been received since last ReadReceivedData function call
+            # if NEW data has been received since
+            # last ReadReceivedData function call
             print(data)  # print new received data
             nodata = 0
             if data == "true":
