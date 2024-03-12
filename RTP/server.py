@@ -14,7 +14,9 @@ import json
 # PATH = r"D:\git ex\VaneshingVisionary\RTP\Data\side"
 PATH = r"D:\git ex\VaneshingVisionary\RTP\Data\front"
 
+still_time = 5
 accuracy = 0.5
+
 
 POSENUM = 6
 
@@ -155,7 +157,7 @@ def test(joints_acc: queue.Queue):
                         t1 = time.time()
                         acc.append(a_score)
                         t_b = 1
-                    if ((time.time() - t1) > 5) and (t_b == 1):
+                    if ((time.time() - t1) > still_time) and (t_b == 1):
                         print("finish")
                         print(1-P.Average(acc))
                         print(ang_acc)
