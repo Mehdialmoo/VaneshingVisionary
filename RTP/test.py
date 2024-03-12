@@ -1,11 +1,14 @@
 import cv2
-# import numpy as np
+import numpy as np
 import time
 
 from utilities import Posefunc
 
 # path = r"./RTP/video/yoga_data"
-path = r"D:\git ex\VaneshingVisionary\RTP\video\yoga_data"
+# path = r"D:\git ex\VaneshingVisionary\RTP\Data\yoga_data"
+# path = r"D:\git ex\VaneshingVisionary\RTP\Data\side"
+path = r"D:\git ex\VaneshingVisionary\RTP\Data\front"
+
 JOINT_DIC = {
     'RIGHT_ELBOW': 14,
     'LEFT_SHOULDER': 11,
@@ -120,7 +123,9 @@ def test():
                     ang_acc = P.cal_acc(
                         angle_list=angle, target_list=angle_target)
 
-                    P.compare_pose(image, angle_point, angle, angle_target)
+                    P.compare_pose(
+                        image, angle_point, angle,
+                        angle_target, show_text=True)
                     a_score = P.diff_compare_angle(angle, angle_target)
 
                     # if (p_score >= a_score):
@@ -170,10 +175,10 @@ def test():
                                                 )
 
                     # txt test 150-*
-                    # hori = np.concatenate((image, resized), axis=1)
-                    cv2.imshow('MediaPipe Feed', image)
-                    # cv2.imshow('Yoga pose estimator', hori)
-                    cv2.imshow("pose", resized)
+                    hori = np.concatenate((image, resized), axis=1)
+                    # cv2.imshow('MediaPipe Feed', image)
+                    cv2.imshow('Yoga pose estimator', hori)
+                    # cv2.imshow("pose", resized)
                 if cv2.waitKey(1) & 0xFF == ord('n'):
                     break
                 elif cv2.waitKey(1) & 0xFF == ord('q'):

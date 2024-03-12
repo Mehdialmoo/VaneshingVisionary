@@ -260,7 +260,9 @@ class Posefunc:
         return landmarks, keypoints, angle, image
 
     @staticmethod
-    def compare_pose(image, angle_point, angle_user, angle_target, show_text:bool):
+    def compare_pose(
+            image, angle_point, angle_user,
+            angle_target, show_text: bool):
         angle_user = np.array(angle_user)
         angle_target = np.array(angle_target)
         angle_point = np.array(angle_point)
@@ -268,8 +270,10 @@ class Posefunc:
         if show_text:
             cv2.rectangle(image, (0, 0), (370, 40), (255, 255, 255), -1)
             cv2.rectangle(image, (0, 40), (370, 370), (255, 255, 255), -1)
-            cv2.putText(image, str("Score:"), (10, 30),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
+            cv2.putText(
+                image, str("Score:"), (10, 30),
+                cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                [0, 153, 0], 2, cv2.LINE_AA)
         height, width, _ = image.shape
 
         text_list = [
@@ -297,7 +301,8 @@ class Posefunc:
                 if show_text:
                     cv2.putText(
                         image, str(text_list[i][0]), (10, ((i*40)+60)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                        [0, 153, 0], 2, cv2.LINE_AA)
                 cv2.circle(image, (
                     int(angle_point[i][0]*width),
                     int(angle_point[i][1]*height)), 30, (0, 0, 255), 5)
@@ -307,7 +312,8 @@ class Posefunc:
                 if show_text:
                     cv2.putText(
                         image, str(text_list[i][1]), (10, ((i*40)+80)),
-                        cv2.FONT_HERSHEY_SIMPLEX, 0.7, [0, 153, 0], 2, cv2.LINE_AA)
+                        cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                        [0, 153, 0], 2, cv2.LINE_AA)
                 cv2.circle(image, (
                     int(angle_point[i][0]*width),
                     int(angle_point[i][1]*height)), 30, (0, 0, 255), 5)

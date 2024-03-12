@@ -9,8 +9,13 @@ import time
 import queue
 import json
 
-PATH = r"./RTP/video/yoga_data/"
-#path = r"D:\git ex\VaneshingVisionary\RTP\video\yoga_data"
+# PATH = r"./RTP/video/yoga_data/"
+# PATH = r"D:\git ex\VaneshingVisionary\RTP\Data\yoga_data"
+# PATH = r"D:\git ex\VaneshingVisionary\RTP\Data\side"
+PATH = r"D:\git ex\VaneshingVisionary\RTP\Data\front"
+
+accuracy = 0.5
+
 POSENUM = 6
 
 JOINT_DIC = {
@@ -134,12 +139,12 @@ def test(joints_acc: queue.Queue):
                         landmark_dic[CAL_LIST[i][2]])
                     angle.append(ang)
                 ang_acc = P.cal_acc(angle, angle_target)
-                
 
-                P.compare_pose(image, angle_point, angle, angle_target,show_text=False)
+                P.compare_pose(image, angle_point, angle,
+                               angle_target, show_text=False)
                 a_score = P.diff_compare_angle(angle, angle_target)
 
-                if (1-a_score >= 0.70):
+                if (1-a_score >= accuracy):
                     cv2.putText(
                         image, str(int((1 - a_score)*100)), (80, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 1,
@@ -172,7 +177,6 @@ def test(joints_acc: queue.Queue):
                         cv2.FONT_HERSHEY_SIMPLEX, 1,
                         [0, 0, 255], 2, cv2.LINE_AA)
 
-
                 P.MP_DRAWING.draw_landmarks(image, results.pose_landmarks,
                                             P.MP_POSE.POSE_CONNECTIONS,
                                             P.MP_DRAWING.DrawingSpec(
@@ -191,28 +195,28 @@ def test(joints_acc: queue.Queue):
 
                 if (not change_pose) and (not quitthread):
                     key = cv2.waitKey(1)
-                    
+
                     if key & 0xFF == ord('n'):
                         print("input: n")
                         cv2.destroyAllWindows()
                         change_pose = True
-                        joints_acc.put((ang_acc,True))
+                        joints_acc.put((ang_acc, True))
                         break
                     elif key & 0xFF == ord('q'):
                         print('input: q')
                         quitthread = True
-                        joints_acc.put((ang_acc,False))
+                        joints_acc.put((ang_acc, False))
                         break
                     else:
-                        joints_acc.put((ang_acc,False))
+                        joints_acc.put((ang_acc, False))
                 elif (not quitthread) and change_pose:
-                    joints_acc.put((ang_acc,True))
+                    joints_acc.put((ang_acc, True))
                     cv2.destroyAllWindows()
                     break
-                else :
-                    joints_acc.put((ang_acc,False))
+                else:
+                    joints_acc.put((ang_acc, False))
                     cv2.destroyAllWindows()
-            if(quitthread):
+            if (quitthread):
                 cv2.destroyAllWindows()
                 break
     cap.release()
@@ -259,7 +263,7 @@ def serverdata(message, joints_acc: queue.Queue):
             nextimage = joints_acc_data[1]
             if nextimage:
                 change_pose = True
-            json_data = json.dumps({"score":score, "next":change_pose})
+            json_data = json.dumps({"score": score, "next": change_pose})
             sock.SendData(json_data)
             print(f"Send data:{json_data} \n...ok!")
 
@@ -267,9 +271,9 @@ def serverdata(message, joints_acc: queue.Queue):
 
     sock.CloseSocket()
 
+
 if __name__ == "__main__":
     print("run main")
-
 
     joints_acc = queue.Queue()
 
