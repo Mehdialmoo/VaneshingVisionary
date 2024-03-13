@@ -1,5 +1,6 @@
 # YOGA COACH
-![ ](./RTP/Data/banner.jpeg)
+<img src="./RTP/Data/banner.jpeg" alt="drawing" width="220" height = "150"/>
+
 ## Introduction
 The program is a yoga assistant that uses computer vision to monitor the user's poses and provide feedback. The program is written in Python, using libraries such as OpenCV, mediapipe to process the user's webcam input and apply pose estimation and recognition algorithms. The program also uses Unity, a cross-platform game engine, to create a realistic and interactive 3D environment where the user can see a virtual trainer and a user interface. The trainer demonstrates the correct poses and guides the user through a yoga session, while the user interface feedbacks on the user's progress. The program aims to help the user improve their yoga skills and enjoy a personalized and immersive experience.
 
@@ -34,17 +35,25 @@ conda activate YOG_ENV
     The project immediately opens in the Editor and is added to the Hub.
 
 ## Run
-- to run the program firstly unity program:
-  + run the test3.py
-  + open the unity project, go to the particle Scene and run it.
+- The unity version is 2022.3.20f1.
+- To run the program:
+  + Run the server.py
+  + Create an empty unity project, add the folder(com.biomotionlab.sup@1.2.0) to the package folder, add the unitypackage to the Asset folder(just drag it),go to the particle Scene and run it. 
+  + You need to make sure the setting of the pythonTest is right.
+  + <img src="unityComponent/pythonTest_setting.png" alt="drawing" width="150"/>
+  + You can change the animation json file in the animationData asset.
+  + <img src="unityComponent/1710340914234.png" alt="drawing" width="150"/>
+
+  
 ## Demo
 
-
-
 - In this video, the size of the particles represents the magnitude of the accuracy value, with a red display indicating that the position is less than 70% accurate.
-
-
-
 - The closer to green means the smaller the accuracy value coming through.
-- https://github.com/Ding-Jia-Layla/VaneshingVisionary/assets/128976273/2f5ad6bc-4418-4997-be84-cf6fe5223f3a
+- <video controls src="unityComponent/2024-03-09-00-47-24.mp4" title="Title"></video>
+
+
+## Reference
+- https://github.com/Siliconifier/Python-Unity-Socket-Communication
+- https://biomotionlab.github.io/SUP/
+
 
