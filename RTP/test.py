@@ -7,7 +7,7 @@ from utilities import Posefunc
 # path = r"./RTP/video/yoga_data"
 # path = r"D:\git ex\VaneshingVisionary\RTP\Data\yoga_data"
 # path = r"D:\git ex\VaneshingVisionary\RTP\Data\side"
-path = r"D:\git ex\VaneshingVisionary\RTP\Data\front"
+# path = r"D:\git ex\VaneshingVisionary\RTP\Data\front"
 
 JOINT_DIC = {
     'RIGHT_ELBOW': 14,
@@ -129,7 +129,7 @@ def test():
                     a_score = P.diff_compare_angle(angle, angle_target)
 
                     # if (p_score >= a_score):
-                    if (1-a_score >= 0.70):
+                    if (1-a_score >= 0.60):
                         cv2.putText(
                             image, str(
                                 int((1 - a_score)*100)), (80, 30),

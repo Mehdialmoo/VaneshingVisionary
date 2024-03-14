@@ -12,10 +12,8 @@ import json
 # PATH = r"D:\git ex\VaneshingVisionary\RTP\Data\side"
 PATH = r"D:\git ex\VaneshingVisionary\RTP\Data\front"
 
-still_time = 5
-accuracy = 0.5
-
-
+STILL_TIME = 3
+ACCURACY = 0.6
 POSENUM = 6
 
 JOINT_DIC = {
@@ -73,7 +71,7 @@ def test(joints_acc: queue.Queue):
             print("change_pose")
             change_pose = False
             if current_pose >= POSENUM:
-                break
+                exit(0)
 
         resized, angle_target, point_target = P.load(PATH, current_pose)
 
@@ -87,7 +85,6 @@ def test(joints_acc: queue.Queue):
                     continue
 
                 frame = cv2.flip(frame, 1)
-
                 image = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
                 image.flags.writeable = False
                 results = pose.process(image)
@@ -140,11 +137,12 @@ def test(joints_acc: queue.Queue):
                     angle.append(ang)
                 ang_acc = P.cal_acc(angle, angle_target)
 
-                P.compare_pose(image, angle_point, angle,
-                               angle_target, show_text=False)
+                P.compare_pose(
+                    image, angle_point, angle,
+                    angle_target, show_text=False)
                 a_score = P.diff_compare_angle(angle, angle_target)
 
-                if (1-a_score >= accuracy):
+                if (1-a_score >= ACCURACY):
                     cv2.putText(
                         image, str(int((1 - a_score)*100)), (80, 30),
                         cv2.FONT_HERSHEY_SIMPLEX, 1,
@@ -155,7 +153,7 @@ def test(joints_acc: queue.Queue):
                         t1 = time.time()
                         acc.append(a_score)
                         t_b = 1
-                    if ((time.time() - t1) > still_time) and (t_b == 1):
+                    if ((time.time() - t1) > STILL_TIME) and (t_b == 1):
                         print("finish")
                         print(1-P.Average(acc))
                         print(ang_acc)
@@ -188,9 +186,10 @@ def test(joints_acc: queue.Queue):
                                             )
 
                 # txt test 150-*
+                # nnn
                 hori = np.concatenate((image, resized), axis=1)
-                # cv2.imshow('MediaPipe Feed', hori)
                 cv2.imshow('MediaPipe Feed', hori)
+                # cv2.imshow('MediaPipe Feed', image)
                 # cv2.imshow("Camera", resized_frame)
 
                 if (not change_pose) and (not quitthread):
