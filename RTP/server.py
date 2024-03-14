@@ -13,7 +13,7 @@ import json
 PATH = r"D:\git ex\VaneshingVisionary\RTP\Data\front"
 
 STILL_TIME = 3
-ACCURACY = 0.6
+ACCURACY = 0.7
 POSENUM = 6
 
 JOINT_DIC = {
@@ -240,7 +240,7 @@ def serverdata(message, joints_acc: queue.Queue):
         i += 1
         data = sock.ReadReceivedData()  # read data
 
-        if data != None:
+        if data is not None:
             # if NEW data has been received since
             # last ReadReceivedData function call
             print(data)  # print new received data

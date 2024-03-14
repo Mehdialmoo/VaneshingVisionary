@@ -7,7 +7,7 @@ from utilities import Posefunc
 # path = r"./RTP/video/yoga_data"
 # path = r"D:\git ex\VaneshingVisionary\RTP\Data\yoga_data"
 # path = r"D:\git ex\VaneshingVisionary\RTP\Data\side"
-# path = r"D:\git ex\VaneshingVisionary\RTP\Data\front"
+path = r"D:\git ex\VaneshingVisionary\RTP\Data\front"
 
 JOINT_DIC = {
     'RIGHT_ELBOW': 14,
